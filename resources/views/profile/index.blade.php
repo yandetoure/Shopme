@@ -4,30 +4,30 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8" x-data="{ activeTab: 'profile' }">
-    <h1 class="text-3xl font-bold mb-8">Mon Profil</h1>
+    <h1 class="text-2xl font-bold mb-6">Mon Profil</h1>
 
     <!-- Tabs Mobile -->
     <div class="md:hidden mb-6">
         <div class="bg-white rounded-lg shadow-md p-2 flex gap-2">
             <button @click="activeTab = 'profile'" 
                     :class="activeTab === 'profile' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                    class="flex-1 px-4 py-2 rounded font-semibold transition">
-                <i class="fas fa-user mr-2"></i>Profil
+                    class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition">
+                <i class="fas fa-user mr-1"></i>Profil
             </button>
             <button @click="activeTab = 'orders'" 
                     :class="activeTab === 'orders' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                    class="flex-1 px-4 py-2 rounded font-semibold transition">
-                <i class="fas fa-box mr-2"></i>Commandes
+                    class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition">
+                <i class="fas fa-box mr-1"></i>Commandes
             </button>
             <button @click="activeTab = 'favorites'" 
                     :class="activeTab === 'favorites' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                    class="flex-1 px-4 py-2 rounded font-semibold transition">
-                <i class="fas fa-heart mr-2"></i>Favoris
+                    class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition">
+                <i class="fas fa-heart mr-1"></i>Favoris
             </button>
             <button @click="activeTab = 'cart'" 
                     :class="activeTab === 'cart' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
-                    class="flex-1 px-4 py-2 rounded font-semibold transition">
-                <i class="fas fa-shopping-cart mr-2"></i>Panier
+                    class="flex-1 px-2 py-1.5 rounded text-xs font-medium transition">
+                <i class="fas fa-shopping-cart mr-1"></i>Panier
             </button>
         </div>
     </div>
@@ -36,22 +36,22 @@
         <!-- Sidebar Desktop -->
         <aside class="hidden md:block">
             <div class="bg-white rounded-lg shadow-md p-4 sticky top-20">
-                <a href="{{ route('profile.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-indigo-50 text-indigo-600 font-semibold">
-                    <i class="fas fa-user mr-2"></i>Mon Profil
+                <a href="{{ route('profile.index') }}" class="block px-3 py-1.5 mb-1.5 rounded hover:bg-indigo-50 text-indigo-600 text-sm font-medium">
+                    <i class="fas fa-user mr-2 text-xs"></i>Mon Profil
                 </a>
-                <a href="{{ route('favorites.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-gray-100 text-gray-700">
-                    <i class="fas fa-heart mr-2"></i>Mes Favoris
+                <a href="{{ route('favorites.index') }}" class="block px-3 py-1.5 mb-1.5 rounded hover:bg-gray-100 text-gray-700 text-sm">
+                    <i class="fas fa-heart mr-2 text-xs"></i>Mes Favoris
                     @if(isset($favoritesCount) && $favoritesCount > 0)
-                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">{{ $favoritesCount }}</span>
+                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">{{ $favoritesCount }}</span>
                     @endif
                 </a>
-                <a href="{{ route('orders.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-gray-100 text-gray-700">
-                    <i class="fas fa-box mr-2"></i>Mes Commandes
+                <a href="{{ route('orders.index') }}" class="block px-3 py-1.5 mb-1.5 rounded hover:bg-gray-100 text-gray-700 text-sm">
+                    <i class="fas fa-box mr-2 text-xs"></i>Mes Commandes
                 </a>
-                <a href="{{ route('cart.index') }}" class="block px-4 py-2 rounded hover:bg-gray-100 text-gray-700">
-                    <i class="fas fa-shopping-cart mr-2"></i>Mon Panier
+                <a href="{{ route('cart.index') }}" class="block px-3 py-1.5 rounded hover:bg-gray-100 text-gray-700 text-sm">
+                    <i class="fas fa-shopping-cart mr-2 text-xs"></i>Mon Panier
                     @if($cartCount > 0)
-                        <span class="ml-2 bg-indigo-600 text-white text-xs rounded-full px-2 py-1">{{ $cartCount }}</span>
+                        <span class="ml-2 bg-indigo-600 text-white text-xs rounded-full px-1.5 py-0.5">{{ $cartCount }}</span>
                     @endif
                 </a>
             </div>
@@ -61,29 +61,29 @@
         <div class="md:col-span-3">
             <!-- Onglet Profil -->
             <div x-show="activeTab === 'profile'" x-cloak class="md:block">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-6">Informations personnelles</h2>
-                    <form method="POST" action="#" class="space-y-4">
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-lg font-bold mb-4">Informations personnelles</h2>
+                    <form method="POST" action="#" class="space-y-3">
                         @csrf
                         <div>
-                            <label class="block text-sm font-medium mb-2">Nom complet</label>
-                            <input type="text" value="{{ $user->name }}" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <label class="block text-xs font-medium mb-1">Nom complet</label>
+                            <input type="text" value="{{ $user->name }}" disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Email</label>
-                            <input type="email" value="{{ $user->email }}" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <label class="block text-xs font-medium mb-1">Email</label>
+                            <input type="email" value="{{ $user->email }}" disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Téléphone</label>
-                            <input type="text" value="{{ $user->phone ?? '' }}" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <label class="block text-xs font-medium mb-1">Téléphone</label>
+                            <input type="text" value="{{ $user->phone ?? '' }}" disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Adresse</label>
-                            <textarea disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">{{ $user->address ?? '' }}</textarea>
+                            <label class="block text-xs font-medium mb-1">Adresse</label>
+                            <textarea disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">{{ $user->address ?? '' }}</textarea>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-2">Rôle</label>
-                            <input type="text" value="{{ ucfirst($user->role) }}" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">
+                            <label class="block text-xs font-medium mb-1">Rôle</label>
+                            <input type="text" value="{{ ucfirst($user->role) }}" disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">
                         </div>
                     </form>
                 </div>
@@ -91,16 +91,16 @@
 
             <!-- Onglet Favoris -->
             <div x-show="activeTab === 'favorites'" x-cloak class="md:block">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-6">Mes Favoris</h2>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-lg font-bold mb-4">Mes Favoris</h2>
                     @if(isset($favoritesCount) && $favoritesCount > 0)
-                        <p class="text-gray-600 mb-4">Vous avez {{ $favoritesCount }} produit(s) dans vos favoris.</p>
-                        <a href="{{ route('favorites.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                        <p class="text-gray-600 mb-3 text-sm">Vous avez {{ $favoritesCount }} produit(s) dans vos favoris.</p>
+                        <a href="{{ route('favorites.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                             Voir mes favoris
                         </a>
                     @else
-                        <p class="text-gray-600 mb-4">Vous n'avez pas encore de favoris.</p>
-                        <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                        <p class="text-gray-600 mb-3 text-sm">Vous n'avez pas encore de favoris.</p>
+                        <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                             Découvrir les produits
                         </a>
                     @endif
@@ -109,20 +109,20 @@
 
             <!-- Onglet Commandes -->
             <div x-show="activeTab === 'orders'" x-cloak class="md:block">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-6">Mes Commandes récentes</h2>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-lg font-bold mb-4">Mes Commandes récentes</h2>
                     @if($orders->count() > 0)
-                        <div class="space-y-4">
+                        <div class="space-y-3">
                             @foreach($orders as $order)
-                                <a href="{{ route('orders.show', $order) }}" class="block border-b pb-4 hover:text-indigo-600">
+                                <a href="{{ route('orders.show', $order) }}" class="block border-b pb-3 hover:text-indigo-600">
                                     <div class="flex justify-between items-center">
                                         <div>
-                                            <h3 class="font-semibold">Commande #{{ $order->order_number }}</h3>
-                                            <p class="text-sm text-gray-600">{{ $order->created_at->format('d/m/Y H:i') }}</p>
+                                            <h3 class="font-semibold text-sm">Commande #{{ $order->order_number }}</h3>
+                                            <p class="text-xs text-gray-600">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                                         </div>
                                         <div class="text-right">
-                                            <p class="font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
-                                            <span class="text-sm px-2 py-1 rounded 
+                                            <p class="font-bold text-indigo-600 text-sm">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+                                            <span class="text-xs px-2 py-0.5 rounded 
                                                 @if($order->status == 'delivered') bg-green-100 text-green-800
                                                 @elseif($order->status == 'shipped') bg-blue-100 text-blue-800
                                                 @else bg-yellow-100 text-yellow-800
@@ -134,27 +134,27 @@
                                 </a>
                             @endforeach
                         </div>
-                        <a href="{{ route('orders.index') }}" class="block text-center mt-6 text-indigo-600 hover:underline">
+                        <a href="{{ route('orders.index') }}" class="block text-center mt-4 text-sm text-indigo-600 hover:underline">
                             Voir toutes les commandes
                         </a>
                     @else
-                        <p class="text-gray-600">Aucune commande pour le moment.</p>
+                        <p class="text-gray-600 text-sm">Aucune commande pour le moment.</p>
                     @endif
                 </div>
             </div>
 
             <!-- Onglet Panier -->
             <div x-show="activeTab === 'cart'" x-cloak class="md:block">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-2xl font-bold mb-6">Mon Panier</h2>
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-lg font-bold mb-4">Mon Panier</h2>
                     @if($cartCount > 0)
-                        <p class="text-gray-600 mb-4">Vous avez {{ $cartCount }} article(s) dans votre panier.</p>
-                        <a href="{{ route('cart.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                        <p class="text-gray-600 mb-3 text-sm">Vous avez {{ $cartCount }} article(s) dans votre panier.</p>
+                        <a href="{{ route('cart.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                             Voir mon panier
                         </a>
                     @else
-                        <p class="text-gray-600 mb-4">Votre panier est vide.</p>
-                        <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                        <p class="text-gray-600 mb-3 text-sm">Votre panier est vide.</p>
+                        <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                             Découvrir les produits
                         </a>
                     @endif

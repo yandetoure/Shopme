@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Mes Favoris</h1>
+    <h1 class="text-2xl font-bold mb-6">Mes Favoris</h1>
 
     @if($favorites->count() > 0)
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -21,7 +21,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-heart text-gray-400 text-6xl mb-4"></i>
             <p class="text-gray-600 mb-4">Vous n'avez pas encore de favoris.</p>
-            <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+            <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                 Découvrir les produits
             </a>
         </div>

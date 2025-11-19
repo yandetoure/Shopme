@@ -4,21 +4,21 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Mes Commandes</h1>
+    <h1 class="text-2xl font-bold mb-6">Mes Commandes</h1>
 
     @if($orders->count() > 0)
         <div class="space-y-4">
             @foreach($orders as $order)
-                <a href="{{ route('orders.show', $order) }}" class="block bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <a href="{{ route('orders.show', $order) }}" class="block bg-white rounded-lg shadow-md p-4 hover:shadow-xl transition">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                         <div>
-                            <h3 class="font-semibold text-lg">Commande #{{ $order->order_number }}</h3>
-                            <p class="text-gray-600 text-sm">Date: {{ $order->created_at->format('d/m/Y H:i') }}</p>
-                            <p class="text-gray-600 text-sm">{{ $order->items->count() }} article(s)</p>
+                            <h3 class="font-semibold text-base">Commande #{{ $order->order_number }}</h3>
+                            <p class="text-gray-600 text-xs">Date: {{ $order->created_at->format('d/m/Y H:i') }}</p>
+                            <p class="text-gray-600 text-xs">{{ $order->items->count() }} article(s)</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
-                            <span class="inline-block px-3 py-1 rounded-full text-sm mt-2
+                            <p class="text-lg font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+                            <span class="inline-block px-2 py-1 rounded-full text-xs mt-2
                                 @if($order->status == 'delivered') bg-green-100 text-green-800
                                 @elseif($order->status == 'shipped') bg-blue-100 text-blue-800
                                 @elseif($order->status == 'processing') bg-yellow-100 text-yellow-800

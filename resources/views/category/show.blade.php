@@ -15,7 +15,7 @@
         <span class="text-gray-800">{{ $category->name }}</span>
     </nav>
 
-    <h1 class="text-3xl font-bold mb-6">{{ $category->name }}</h1>
+    <h1 class="text-2xl font-bold mb-4">{{ $category->name }}</h1>
 
     @if($category->description)
         <p class="text-gray-700 mb-8">{{ $category->description }}</p>
@@ -38,7 +38,7 @@
 
     <!-- Produits -->
     <div>
-        <h2 class="text-xl font-semibold mb-4">Produits</h2>
+        <h2 class="text-lg font-semibold mb-3">Produits</h2>
         @if($products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 @foreach($products as $product)

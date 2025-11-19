@@ -6,23 +6,23 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Filtres -->
-        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-6 h-fit">
-            <h3 class="font-bold text-lg mb-4">Filtres</h3>
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-4 h-fit sticky top-20">
+            <h3 class="font-bold text-base mb-3">Filtres</h3>
             
             <form method="GET" action="{{ route('products.index') }}">
                 <!-- Recherche -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Rechercher</label>
+                <div class="mb-3">
+                    <label class="block text-xs font-medium mb-1">Rechercher</label>
                     <input type="text" name="search" value="{{ request('search') }}" 
                            placeholder="Nom du produit..." 
-                           class="w-full px-3 py-2 border rounded-lg">
+                           class="w-full px-2 py-1.5 text-sm border rounded-lg">
                 </div>
 
                 <!-- Catégorie -->
                 @if(isset($categories) && $categories->count() > 0)
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Catégorie</label>
-                    <select name="category" class="w-full px-3 py-2 border rounded-lg">
+                <div class="mb-3">
+                    <label class="block text-xs font-medium mb-1">Catégorie</label>
+                    <select name="category" class="w-full px-2 py-1.5 text-sm border rounded-lg">
                         <option value="">Toutes</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -34,9 +34,9 @@
                 @endif
 
                 <!-- Trier par -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium mb-2">Trier par</label>
-                    <select name="sort" class="w-full px-3 py-2 border rounded-lg">
+                <div class="mb-3">
+                    <label class="block text-xs font-medium mb-1">Trier par</label>
+                    <select name="sort" class="w-full px-2 py-1.5 text-sm border rounded-lg">
                         <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Plus récents</option>
                         <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Prix croissant</option>
                         <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Prix décroissant</option>
@@ -44,10 +44,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                <button type="submit" class="w-full bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 text-sm font-medium">
                     Appliquer
                 </button>
-                <a href="{{ route('products.index') }}" class="block text-center mt-2 text-gray-600 hover:text-indigo-600">
+                <a href="{{ route('products.index') }}" class="block text-center mt-1.5 text-xs text-gray-600 hover:text-indigo-600">
                     Réinitialiser
                 </a>
             </form>
@@ -55,10 +55,10 @@
 
         <!-- Liste des produits -->
         <div class="flex-1">
-            <h1 class="text-3xl font-bold mb-6">Produits</h1>
+            <h1 class="text-2xl font-bold mb-4">Produits</h1>
             
             @if($products->count() > 0)
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                     @foreach($products as $product)
                         @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
                     @endforeach

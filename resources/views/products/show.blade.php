@@ -14,82 +14,82 @@
 
         <!-- Informations du produit -->
         <div>
-            <h1 class="text-3xl font-bold mb-4">{{ $product->name }}</h1>
+            <h1 class="text-2xl font-bold mb-3">{{ $product->name }}</h1>
             
             @if($product->category)
-                <a href="{{ route('category.show', $product->category->slug) }}" class="text-indigo-600 hover:underline mb-4 block">
+                <a href="{{ route('category.show', $product->category->slug) }}" class="text-indigo-600 hover:underline mb-3 block text-sm">
                     {{ $product->category->name }}
                 </a>
             @endif
 
             <!-- Prix -->
-            <div class="mb-6">
+            <div class="mb-4">
                 @if($product->is_on_sale)
-                    <div class="flex items-center gap-4">
-                        <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
-                        <span class="text-xl text-gray-400 line-through">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
-                        <span class="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl font-bold text-indigo-600">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
+                        <span class="text-lg text-gray-400 line-through">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
+                        <span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
                             -{{ $product->discount_percentage }}%
                         </span>
                     </div>
                 @else
-                    <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-2xl font-bold text-indigo-600">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @endif
             </div>
 
             <!-- Description -->
             @if($product->short_description)
-                <p class="text-gray-700 mb-6">{{ $product->short_description }}</p>
+                <p class="text-gray-700 mb-4 text-sm">{{ $product->short_description }}</p>
             @endif
 
             <!-- Stock -->
-            <div class="mb-6">
+            <div class="mb-4">
                 @if($product->in_stock)
-                    <span class="text-green-600 font-semibold">✓ En stock ({{ $product->stock_quantity }} disponibles)</span>
+                    <span class="text-green-600 font-medium text-sm">✓ En stock ({{ $product->stock_quantity }} disponibles)</span>
                 @else
-                    <span class="text-red-600 font-semibold">✗ Rupture de stock</span>
+                    <span class="text-red-600 font-medium text-sm">✗ Rupture de stock</span>
                 @endif
             </div>
 
             <!-- Actions -->
             @auth
-                <div class="mb-6 space-y-4">
+                <div class="mb-4 space-y-3">
                     <!-- Bouton Favoris -->
                     <button onclick="toggleFavorite({{ $product->id }}, this)" 
-                            class="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg border-2 {{ $isFavorite ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600' }} transition font-semibold"
+                            class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg border-2 {{ $isFavorite ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600' }} transition text-sm font-medium"
                             data-product-id="{{ $product->id }}">
-                        <i class="fas fa-heart {{ $isFavorite ? 'text-red-500' : '' }}"></i>
-                        <span>{{ $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}</span>
+                        <i class="fas fa-heart text-sm {{ $isFavorite ? 'text-red-500' : '' }}"></i>
+                        <span class="text-sm">{{ $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}</span>
                     </button>
 
                     @if($product->in_stock && $product->status === 'active')
                         <form action="{{ route('cart.add', $product->id) }}" method="POST">
                             @csrf
-                            <div class="flex items-center gap-4 mb-4">
-                                <label for="quantity" class="font-semibold">Quantité:</label>
+                            <div class="flex items-center gap-3 mb-3">
+                                <label for="quantity" class="font-medium text-sm">Quantité:</label>
                                 <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" 
-                                       class="w-20 px-3 py-2 border rounded-lg">
+                                       class="w-16 px-2 py-1.5 border rounded-lg text-sm">
                             </div>
-                            <button type="submit" class="w-full bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold flex items-center justify-center gap-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Ajouter au panier</span>
+                            <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-cart text-sm"></i>
+                                <span class="text-sm">Ajouter au panier</span>
                             </button>
                         </form>
                     @endif
                 </div>
             @else
-                <div class="mb-6">
-                    <a href="{{ route('login') }}" class="block w-full bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold text-center">
-                        <i class="fas fa-shopping-cart mr-2"></i>Connectez-vous pour acheter
+                <div class="mb-4">
+                    <a href="{{ route('login') }}" class="block w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium text-center">
+                        <i class="fas fa-shopping-cart mr-2 text-sm"></i>Connectez-vous pour acheter
                     </a>
                 </div>
             @endauth
 
             <!-- Description détaillée -->
             @if($product->description)
-                <div class="border-t pt-6">
-                    <h3 class="font-bold text-lg mb-4">Description</h3>
-                    <p class="text-gray-700 whitespace-pre-line">{{ $product->description }}</p>
+                <div class="border-t pt-4">
+                    <h3 class="font-bold text-base mb-3">Description</h3>
+                    <p class="text-gray-700 whitespace-pre-line text-sm">{{ $product->description }}</p>
                 </div>
             @endif
         </div>
@@ -97,8 +97,8 @@
 
     <!-- Produits similaires -->
     @if(isset($relatedProducts) && $relatedProducts->count() > 0)
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold mb-6">Produits similaires</h2>
+        <div class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Produits similaires</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 @foreach($relatedProducts as $relatedProduct)
                     @include('partials.product-card', ['product' => $relatedProduct, 'favoriteIds' => Auth::check() ? Auth::user()->favorites()->pluck('product_id')->toArray() : []])
