@@ -5,6 +5,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\AdminProductController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,4 +57,37 @@ Route::middleware(['auth'])->group(function () {
         $favoritesCount = $user->favorites()->count();
         return view('profile.index', compact('user', 'orders', 'cartCount', 'favoritesCount'));
     })->name('profile.index');
+
+    // Routes des dashboards
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        // Dashboard vendeur
+        Route::get('/vendeur', [DashboardController::class, 'vendeur'])
+            ->name('vendeur')
+            ->middleware('role:vendeur');
+
+        // Dashboard admin
+        Route::get('/admin', [DashboardController::class, 'admin'])
+            ->name('admin')
+            ->middleware('role:admin');
+
+        // Dashboard super admin
+        Route::get('/superadmin', [DashboardController::class, 'superAdmin'])
+            ->name('superadmin')
+            ->middleware('role:super_admin');
+    });
+
+    // Routes admin (gestion)
+    Route::middleware(['role:admin|super_admin'])->prefix('admin')->name('admin.')->group(function () {
+        // Produits
+        Route::resource('products', AdminProductController::class);
+        
+        // Catégories
+        Route::resource('categories', AdminCategoryController::class);
+        
+        // Commandes
+        Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.updatePaymentStatus');
+    });
 });

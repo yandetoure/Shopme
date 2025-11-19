@@ -74,6 +74,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Vérifier si l'utilisateur est super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    /**
      * Relations
      */
     public function cartItems()
