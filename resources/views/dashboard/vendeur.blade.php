@@ -4,69 +4,69 @@
 @section('page-title', 'Dashboard Vendeur')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-4">
     <!-- Statistiques principales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Produits</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalProducts }}</p>
+                    <p class="text-gray-500 text-xs">Total Produits</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $totalProducts }}</p>
                 </div>
-                <div class="bg-blue-100 rounded-full p-4">
-                    <i class="fas fa-box text-blue-600 text-2xl"></i>
+                <div class="bg-blue-100 rounded-full p-3">
+                    <i class="fas fa-box text-blue-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Commandes</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalOrders }}</p>
+                    <p class="text-gray-500 text-xs">Total Commandes</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $totalOrders }}</p>
                 </div>
-                <div class="bg-green-100 rounded-full p-4">
-                    <i class="fas fa-shopping-bag text-green-600 text-2xl"></i>
+                <div class="bg-green-100 rounded-full p-3">
+                    <i class="fas fa-shopping-bag text-green-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Revenus Totaux</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ number_format($totalRevenue, 2) }} €</p>
+                    <p class="text-gray-500 text-xs">Revenus Totaux</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($totalRevenue, 0, '', '.') }} FCFA</p>
                 </div>
-                <div class="bg-yellow-100 rounded-full p-4">
-                    <i class="fas fa-euro-sign text-yellow-600 text-2xl"></i>
+                <div class="bg-yellow-100 rounded-full p-3">
+                    <i class="fas fa-money-bill text-yellow-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Commandes en attente</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $pendingOrders }}</p>
+                    <p class="text-gray-500 text-xs">Commandes en attente</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $pendingOrders }}</p>
                 </div>
-                <div class="bg-orange-100 rounded-full p-4">
-                    <i class="fas fa-clock text-orange-600 text-2xl"></i>
+                <div class="bg-orange-100 rounded-full p-3">
+                    <i class="fas fa-clock text-orange-600 text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Graphique des revenus mensuels -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Revenus Mensuels</h2>
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Revenus Mensuels</h2>
         <canvas id="monthlyRevenueChart" height="80"></canvas>
     </div>
 
     <!-- Produits les plus vendus et Commandes récentes -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Produits les plus vendus -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Produits les plus vendus</h2>
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Produits les plus vendus</h2>
             <div class="space-y-4">
                 @forelse($topProducts as $product)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -83,7 +83,7 @@
                             <p class="text-sm text-gray-500">{{ $product->sales_count }} ventes</p>
                         </div>
                     </div>
-                    <p class="font-bold text-orange-600">{{ number_format($product->price, 2) }} €</p>
+                    <p class="font-bold text-orange-600 text-sm">{{ number_format($product->price, 0, '', '.') }} FCFA</p>
                 </div>
                 @empty
                 <p class="text-gray-500 text-center py-4">Aucun produit vendu</p>
@@ -92,8 +92,8 @@
         </div>
 
         <!-- Commandes récentes -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Commandes récentes</h2>
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Commandes récentes</h2>
             <div class="space-y-4">
                 @forelse($recentOrders as $order)
                 <div class="border-l-4 border-orange-500 p-3 bg-gray-50 rounded-lg">
@@ -109,7 +109,7 @@
                         </span>
                     </div>
                     <p class="text-sm text-gray-600">{{ $order->user->name }}</p>
-                    <p class="text-sm font-bold text-gray-800 mt-1">{{ number_format($order->total, 2) }} €</p>
+                    <p class="text-xs font-bold text-gray-800 mt-1">{{ number_format($order->total, 0, '', '.') }} FCFA</p>
                     <p class="text-xs text-gray-500 mt-1">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                 </div>
                 @empty
@@ -136,7 +136,7 @@
         data: {
             labels: months,
             datasets: [{
-                label: 'Revenus (€)',
+                label: 'Revenus (FCFA)',
                 data: revenueData,
                 borderColor: 'rgb(249, 115, 22)',
                 backgroundColor: 'rgba(249, 115, 22, 0.1)',
@@ -157,7 +157,7 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            return value + ' €';
+                            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' FCFA';
                         }
                     }
                 }

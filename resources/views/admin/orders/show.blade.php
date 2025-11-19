@@ -50,9 +50,9 @@
                     @foreach($order->items as $item)
                     <tr>
                         <td class="px-4 py-4">{{ $item->product_name }}</td>
-                        <td class="px-4 py-4">{{ number_format($item->price, 2) }} €</td>
+                        <td class="px-4 py-4">{{ number_format($item->price, 0, '', '.') }} FCFA</td>
                         <td class="px-4 py-4">{{ $item->quantity }}</td>
-                        <td class="px-4 py-4 font-bold">{{ number_format($item->total, 2) }} €</td>
+                        <td class="px-4 py-4 font-bold">{{ number_format($item->total, 0, '', '.') }} FCFA</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -66,25 +66,25 @@
         <div class="space-y-2">
             <div class="flex justify-between">
                 <span class="text-gray-600">Sous-total</span>
-                <span class="font-semibold">{{ number_format($order->subtotal, 2) }} €</span>
+                <span class="font-semibold">{{ number_format($order->subtotal, 0, '', '.') }} FCFA</span>
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">TVA</span>
-                <span class="font-semibold">{{ number_format($order->tax, 2) }} €</span>
+                <span class="font-semibold">{{ number_format($order->tax, 0, '', '.') }} FCFA</span>
             </div>
             <div class="flex justify-between">
                 <span class="text-gray-600">Livraison</span>
-                <span class="font-semibold">{{ number_format($order->shipping, 2) }} €</span>
+                <span class="font-semibold">{{ number_format($order->shipping, 0, '', '.') }} FCFA</span>
             </div>
             @if($order->discount > 0)
             <div class="flex justify-between text-red-600">
                 <span>Remise</span>
-                <span class="font-semibold">-{{ number_format($order->discount, 2) }} €</span>
+                <span class="font-semibold">-{{ number_format($order->discount, 0, '', '.') }} FCFA</span>
             </div>
             @endif
             <div class="flex justify-between text-xl font-bold border-t pt-2">
                 <span>Total</span>
-                <span>{{ number_format($order->total, 2) }} €</span>
+                <span>{{ number_format($order->total, 0, '', '.') }} FCFA</span>
             </div>
         </div>
     </div>

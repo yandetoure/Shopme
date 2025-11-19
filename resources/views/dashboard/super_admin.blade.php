@@ -4,111 +4,111 @@
 @section('page-title', 'Dashboard Super Admin')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-4">
     <!-- Statistiques principales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Utilisateurs</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalUsers }}</p>
-                    <div class="flex space-x-4 mt-2 text-xs">
+                    <p class="text-gray-500 text-xs">Total Utilisateurs</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $totalUsers }}</p>
+                    <div class="flex space-x-3 mt-1 text-xs">
                         <span class="text-blue-600">{{ $totalAdmins }} admins</span>
                         <span class="text-green-600">{{ $totalVendeurs }} vendeurs</span>
                         <span class="text-gray-600">{{ $totalClients }} clients</span>
                     </div>
                 </div>
-                <div class="bg-blue-100 rounded-full p-4">
-                    <i class="fas fa-users text-blue-600 text-2xl"></i>
+                <div class="bg-blue-100 rounded-full p-3">
+                    <i class="fas fa-users text-blue-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Produits</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalProducts }}</p>
+                    <p class="text-gray-500 text-xs">Total Produits</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $totalProducts }}</p>
                 </div>
-                <div class="bg-green-100 rounded-full p-4">
-                    <i class="fas fa-box text-green-600 text-2xl"></i>
+                <div class="bg-green-100 rounded-full p-3">
+                    <i class="fas fa-box text-green-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Revenus Totaux</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ number_format($totalRevenue, 2) }} €</p>
-                    <p class="text-sm text-green-600 mt-1">Ce mois: {{ number_format($monthlyRevenue, 2) }} €</p>
-                    <p class="text-xs text-gray-500 mt-1">Cette année: {{ number_format($yearlyRevenue, 2) }} €</p>
+                    <p class="text-gray-500 text-xs">Revenus Totaux</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($totalRevenue, 0, '', '.') }} FCFA</p>
+                    <p class="text-xs text-green-600 mt-1">Ce mois: {{ number_format($monthlyRevenue, 0, '', '.') }} FCFA</p>
+                    <p class="text-xs text-gray-500 mt-1">Cette année: {{ number_format($yearlyRevenue, 0, '', '.') }} FCFA</p>
                 </div>
-                <div class="bg-yellow-100 rounded-full p-4">
-                    <i class="fas fa-euro-sign text-yellow-600 text-2xl"></i>
+                <div class="bg-yellow-100 rounded-full p-3">
+                    <i class="fas fa-money-bill text-yellow-600 text-lg"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="bg-white rounded-lg shadow p-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-gray-500 text-sm">Total Commandes</p>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalOrders }}</p>
-                    <p class="text-sm text-orange-600 mt-1">{{ $pendingOrders }} en attente</p>
+                    <p class="text-gray-500 text-xs">Total Commandes</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">{{ $totalOrders }}</p>
+                    <p class="text-xs text-orange-600 mt-1">{{ $pendingOrders }} en attente</p>
                     <p class="text-xs text-green-600 mt-1">{{ $completedOrders }} complétées</p>
                 </div>
-                <div class="bg-purple-100 rounded-full p-4">
-                    <i class="fas fa-shopping-bag text-purple-600 text-2xl"></i>
+                <div class="bg-purple-100 rounded-full p-3">
+                    <i class="fas fa-shopping-bag text-purple-600 text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Statistiques secondaires -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Catégories</p>
-            <p class="text-2xl font-bold text-gray-800 mt-2">{{ $totalCategories }}</p>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-xs">Catégories</p>
+            <p class="text-xl font-bold text-gray-800 mt-1">{{ $totalCategories }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Admins</p>
-            <p class="text-2xl font-bold text-blue-600 mt-2">{{ $totalAdmins }}</p>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-xs">Admins</p>
+            <p class="text-xl font-bold text-blue-600 mt-1">{{ $totalAdmins }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Vendeurs</p>
-            <p class="text-2xl font-bold text-green-600 mt-2">{{ $totalVendeurs }}</p>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-xs">Vendeurs</p>
+            <p class="text-xl font-bold text-green-600 mt-1">{{ $totalVendeurs }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <p class="text-gray-500 text-sm">Commandes annulées</p>
-            <p class="text-2xl font-bold text-red-600 mt-2">{{ $cancelledOrders }}</p>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-gray-500 text-xs">Commandes annulées</p>
+            <p class="text-xl font-bold text-red-600 mt-1">{{ $cancelledOrders }}</p>
         </div>
     </div>
 
     <!-- Graphiques et statistiques -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Commandes par statut</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Commandes par statut</h2>
             <canvas id="ordersByStatusChart" height="200"></canvas>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Répartition des utilisateurs par rôle</h2>
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Répartition des utilisateurs par rôle</h2>
             <canvas id="usersByRoleChart" height="200"></canvas>
         </div>
     </div>
 
     <!-- Graphique des revenus mensuels -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Revenus Mensuels (12 derniers mois)</h2>
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Revenus Mensuels (12 derniers mois)</h2>
         <canvas id="monthlyRevenueChart" height="80"></canvas>
     </div>
 
     <!-- Utilisateurs récents et Commandes récentes -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <!-- Utilisateurs récents -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Utilisateurs récents</h2>
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Utilisateurs récents</h2>
             <div class="space-y-3">
                 @forelse($recentUsers as $user)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -135,8 +135,8 @@
         </div>
 
         <!-- Commandes récentes -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Commandes récentes</h2>
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Commandes récentes</h2>
             <div class="space-y-4">
                 @forelse($recentOrders as $order)
                 <div class="border-l-4 border-orange-500 p-3 bg-gray-50 rounded-lg">
@@ -153,7 +153,7 @@
                         </span>
                     </div>
                     <p class="text-sm text-gray-600">{{ $order->user->name }}</p>
-                    <p class="text-sm font-bold text-gray-800 mt-1">{{ number_format($order->total, 2) }} €</p>
+                    <p class="text-xs font-bold text-gray-800 mt-1">{{ number_format($order->total, 0, '', '.') }} FCFA</p>
                     <p class="text-xs text-gray-500 mt-1">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                 </div>
                 @empty
@@ -164,8 +164,8 @@
     </div>
 
     <!-- Produits les plus vendus -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Top 10 Produits les plus vendus</h2>
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Top 10 Produits les plus vendus</h2>
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50">
@@ -194,9 +194,9 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($product->price, 2) }} €</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ number_format($product->price, 0, '', '.') }} FCFA</td>
                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->sales_count }}</td>
-                        <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-orange-600">{{ number_format($product->price * $product->sales_count, 2) }} €</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-orange-600">{{ number_format($product->price * $product->sales_count, 0, '', '.') }} FCFA</td>
                     </tr>
                     @empty
                     <tr>
@@ -310,7 +310,7 @@
         data: {
             labels: monthLabels,
             datasets: [{
-                label: 'Revenus (€)',
+                label: 'Revenus (FCFA)',
                 data: revenueData,
                 borderColor: 'rgb(249, 115, 22)',
                 backgroundColor: 'rgba(249, 115, 22, 0.1)',
@@ -331,7 +331,7 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            return value + ' €';
+                            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' FCFA';
                         }
                     }
                 }

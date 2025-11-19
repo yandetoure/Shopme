@@ -15,9 +15,24 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Récupérer les rôles
+        $superAdminRole = Role::where('name', 'super_admin')->first();
         $adminRole = Role::where('name', 'admin')->first();
         $vendeurRole = Role::where('name', 'vendeur')->first();
         $clientRole = Role::where('name', 'client')->first();
+
+        // Créer le super administrateur
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'superadmin@shopme.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'phone' => '+33 1 00 00 00 00',
+                'address' => '1 Avenue du Super Admin, 75001 Paris',
+            ]
+        );
+        if ($superAdminRole && !$superAdmin->hasRole($superAdminRole)) {
+            $superAdmin->assignRole($superAdminRole);
+        }
 
         // Créer l'administrateur
         $admin = User::firstOrCreate(
