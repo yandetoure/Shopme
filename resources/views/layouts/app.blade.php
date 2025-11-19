@@ -33,29 +33,36 @@
                             Catégories
                             <i class="fas fa-chevron-down ml-1 text-xs"></i>
                         </button>
-                        <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            @foreach($navCategories as $category)
-                                @if($category->children->count() > 0)
-                                    <!-- Catégorie avec sous-catégories -->
-                                    <div class="px-4 py-2 border-b border-gray-100 last:border-b-0">
-                                        <a href="{{ route('category.show', $category->slug) }}" class="text-sm font-semibold text-gray-800 hover:text-orange-500 block mb-2">
-                                            {{ $category->name }}
-                                        </a>
-                                        <div class="pl-3 space-y-1">
-                                            @foreach($category->children as $child)
-                                                <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block text-xs text-gray-600 hover:text-orange-500 py-1">
-                                                    {{ $child->name }}
-                                                </a>
-                                            @endforeach
-                                        </div>
+                        <div class="absolute left-0 mt-2 w-[960px] bg-white rounded-lg shadow-xl border border-gray-100 py-4 px-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[75vh] overflow-y-auto">
+                            <div class="grid grid-cols-6 gap-x-4 gap-y-3">
+                                @foreach($navCategories as $category)
+                                    <div class="border-r border-gray-100 last:border-r-0 pr-3 last:pr-0">
+                                        @if($category->children->count() > 0)
+                                            <!-- Catégorie avec sous-catégories -->
+                                            <a href="{{ route('category.show', $category->slug) }}" class="text-xs font-semibold text-gray-900 hover:text-orange-600 block mb-2 pb-1 border-b border-gray-100">
+                                                {{ $category->name }}
+                                            </a>
+                                            <div class="space-y-1">
+                                                @foreach($category->children->take(6) as $child)
+                                                    <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block text-xs text-gray-600 hover:text-orange-600 hover:pl-1 transition-all py-0.5 truncate" title="{{ $child->name }}">
+                                                        {{ $child->name }}
+                                                    </a>
+                                                @endforeach
+                                                @if($category->children->count() > 6)
+                                                    <a href="{{ route('category.show', $category->slug) }}" class="block text-xs text-orange-600 font-medium hover:text-orange-700 mt-1">
+                                                        +{{ $category->children->count() - 6 }} autres...
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <!-- Catégorie sans sous-catégories -->
+                                            <a href="{{ route('category.show', $category->slug) }}" class="block text-xs font-semibold text-gray-900 hover:text-orange-600 py-1">
+                                                {{ $category->name }}
+                                            </a>
+                                        @endif
                                     </div>
-                                @else
-                                    <!-- Catégorie sans sous-catégories -->
-                                    <a href="{{ route('category.show', $category->slug) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500">
-                                        {{ $category->name }}
-                                    </a>
-                                @endif
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     @endif
@@ -163,19 +170,23 @@
                                 <span>Catégories</span>
                                 <i class="fas fa-chevron-down text-xs" :class="{ 'rotate-180': openCategories }"></i>
                             </button>
-                            <div x-show="openCategories" x-cloak class="pl-4 space-y-1">
-                                @foreach($navCategories as $category)
-                                    <a href="{{ route('category.show', $category->slug) }}" class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">
-                                        {{ $category->name }}
-                                    </a>
-                                    @if($category->children->count() > 0)
-                                        @foreach($category->children as $child)
-                                            <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block px-6 py-1 text-xs text-gray-500 hover:bg-gray-100 rounded">
-                                                {{ $child->name }}
+                            <div x-show="openCategories" x-cloak class="pl-2 space-y-1 max-h-[60vh] overflow-y-auto">
+                                <div class="grid grid-cols-2 gap-1">
+                                    @foreach($navCategories as $category)
+                                        <div class="px-2 py-1">
+                                            <a href="{{ route('category.show', $category->slug) }}" class="block text-xs font-semibold text-gray-700 hover:text-orange-600 py-1">
+                                                {{ $category->name }}
                                             </a>
-                                        @endforeach
-                                    @endif
-                                @endforeach
+                                            @if($category->children->count() > 0)
+                                                @foreach($category->children as $child)
+                                                    <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block pl-2 py-0.5 text-xs text-gray-500 hover:text-orange-600">
+                                                        {{ $child->name }}
+                                                    </a>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     @endif

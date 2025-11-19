@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
 {
@@ -14,96 +15,67 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer les catégories
-        $smartphones = Category::where('slug', 'smartphones')->first();
-        $laptops = Category::where('slug', 'ordinateurs-portables')->first();
-        $men = Category::where('slug', 'homme')->first();
-        $women = Category::where('slug', 'femme')->first();
-        $home = Category::where('slug', 'maison')->first();
+        $faker = Faker::create('fr_FR');
 
-        if (!$smartphones || !$laptops || !$men || !$women || !$home) {
-            $this->command->warn('Certaines catégories n\'existent pas. Veuillez exécuter CategorySeeder d\'abord.');
+        // Récupérer toutes les catégories (parentes et sous-catégories)
+        $categories = Category::all();
+
+        if ($categories->isEmpty()) {
+            $this->command->warn('Aucune catégorie trouvée. Veuillez exécuter CategorySeeder d\'abord.');
             return;
         }
 
-        // Créer des produits (prix en FCFA)
-        $products = [
-            [
-                'name' => 'iPhone 15 Pro',
-                'slug' => Str::slug('iPhone 15 Pro'),
-                'description' => 'Le dernier smartphone Apple avec écran ProMotion et puce A17 Pro.',
-                'short_description' => 'Smartphone haut de gamme avec écran 6.1 pouces',
-                'category_id' => $smartphones->id,
-                'price' => 785000,
-                'sale_price' => 720000,
-                'is_on_sale' => true,
-                'stock_quantity' => 50,
-                'in_stock' => true,
-                'status' => 'active',
-                'featured' => true,
-            ],
-            [
-                'name' => 'Samsung Galaxy S24',
-                'slug' => Str::slug('Samsung Galaxy S24'),
-                'description' => 'Smartphone Android avec écran AMOLED et appareil photo 108MP.',
-                'short_description' => 'Smartphone Android premium',
-                'category_id' => $smartphones->id,
-                'price' => 589000,
-                'stock_quantity' => 30,
-                'in_stock' => true,
-                'status' => 'active',
-                'featured' => true,
-            ],
-            [
-                'name' => 'MacBook Pro 14"',
-                'slug' => Str::slug('MacBook Pro 14'),
-                'description' => 'Ordinateur portable Apple avec puce M3 Pro et écran Liquid Retina XDR.',
-                'short_description' => 'Ordinateur portable professionnel',
-                'category_id' => $laptops->id,
-                'price' => 1440000,
-                'sale_price' => 1310000,
-                'is_on_sale' => true,
-                'stock_quantity' => 20,
-                'in_stock' => true,
-                'status' => 'active',
-                'featured' => true,
-            ],
-            [
-                'name' => 'T-shirt Homme Premium',
-                'slug' => Str::slug('T-shirt Homme Premium'),
-                'description' => 'T-shirt en coton bio, confortable et durable.',
-                'short_description' => 'T-shirt en coton bio',
-                'category_id' => $men->id,
-                'price' => 19650,
-                'stock_quantity' => 100,
-                'in_stock' => true,
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Robe Femme Élégante',
-                'slug' => Str::slug('Robe Femme Élégante'),
-                'description' => 'Robe élégante pour toutes occasions, confectionnée en tissu de qualité.',
-                'short_description' => 'Robe élégante polyvalente',
-                'category_id' => $women->id,
-                'price' => 52400,
-                'sale_price' => 39300,
-                'is_on_sale' => true,
-                'stock_quantity' => 60,
-                'in_stock' => true,
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Canapé Moderne',
-                'slug' => Str::slug('Canapé Moderne'),
-                'description' => 'Canapé confortable avec revêtement en tissu résistant.',
-                'short_description' => 'Canapé 3 places confortable',
-                'category_id' => $home->id,
-                'price' => 589000,
-                'stock_quantity' => 10,
-                'in_stock' => true,
-                'status' => 'active',
-            ],
-        ];
+        // Créer 100 produits
+        $products = [];
+        for ($i = 0; $i < 100; $i++) {
+            // Sélectionner une catégorie aléatoire
+            $category = $categories->random();
+            
+            // Générer un nom de produit
+            $productName = $faker->words(rand(2, 4), true);
+            $productName = ucwords($productName);
+            
+            // Générer un prix en FCFA (entre 5000 et 2000000)
+            $price = rand(5000, 2000000);
+            $price = round($price / 100) * 100; // Arrondir à la centaine
+            
+            // 30% de chance d'être en promotion
+            $isOnSale = rand(1, 100) <= 30;
+            $salePrice = null;
+            if ($isOnSale) {
+                $discount = rand(10, 40); // Réduction de 10% à 40%
+                $salePrice = round($price * (1 - $discount / 100) / 100) * 100;
+            }
+            
+            // 20% de chance d'être en vedette
+            $featured = rand(1, 100) <= 20;
+            
+            // Statut aléatoire (90% actifs)
+            $statuses = ['active', 'active', 'active', 'active', 'active', 'active', 'active', 'active', 'active', 'inactive'];
+            $status = $statuses[array_rand($statuses)];
+            
+            // Stock aléatoire
+            $stockQuantity = rand(0, 200);
+            $inStock = $stockQuantity > 0;
+            
+            $products[] = [
+                'name' => $productName,
+                'slug' => Str::slug($productName . ' ' . $i),
+                'description' => $faker->paragraphs(rand(2, 4), true),
+                'short_description' => $faker->sentence(rand(8, 15)),
+                'category_id' => $category->id, // Catégorie principale
+                'price' => $price,
+                'sale_price' => $salePrice,
+                'is_on_sale' => $isOnSale,
+                'stock_quantity' => $stockQuantity,
+                'in_stock' => $inStock,
+                'status' => $status,
+                'featured' => $featured,
+                'weight' => rand(100, 5000) / 100, // Entre 1g et 50kg
+                'views' => rand(0, 1000),
+                'sales_count' => rand(0, 500),
+            ];
+        }
 
         foreach ($products as $productData) {
             // Extraire category_id du tableau
@@ -114,7 +86,7 @@ class ProductSeeder extends Seeder
             $product = Product::firstOrCreate(
                 ['slug' => $productData['slug']],
                 array_merge($productData, [
-                    'sku' => 'SKU-' . Str::random(8),
+                    'sku' => 'SKU-' . strtoupper(Str::random(10)),
                     'category_id' => $categoryId, // Catégorie principale pour compatibilité
                 ])
             );
@@ -138,9 +110,18 @@ class ProductSeeder extends Seeder
                         $product->categories()->attach($category->parent_id);
                     }
                 }
+                
+                // 30% de chance d'associer le produit à une autre catégorie supplémentaire
+                if (rand(1, 100) <= 30) {
+                    $additionalCategory = $categories->where('id', '!=', $categoryId)->random();
+                    $product->load('categories');
+                    if (!$product->categories->contains($additionalCategory->id)) {
+                        $product->categories()->attach($additionalCategory->id);
+                    }
+                }
             }
         }
 
-        $this->command->info(count($products) . ' produits créés avec succès.');
+        $this->command->info('100 produits créés avec succès.');
     }
 }
