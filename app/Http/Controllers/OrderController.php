@@ -23,7 +23,7 @@ class OrderController extends Controller
             return $item->total;
         });
         $tax = $subtotal * 0.20;
-        $shipping = 10.00;
+        $shipping = 6550; // Frais de livraison en FCFA
         $total = $subtotal + $tax + $shipping;
 
         return view('orders.checkout', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total'));
@@ -71,7 +71,7 @@ class OrderController extends Controller
                 return $item->total;
             });
             $tax = $subtotal * 0.20; // 20% de TVA (à ajuster)
-            $shipping = 10.00; // Frais de livraison fixes (à ajuster)
+            $shipping = 6550; // Frais de livraison fixes en FCFA (équivalent à ~10€)
             $total = $subtotal + $tax + $shipping;
 
             // Créer la commande

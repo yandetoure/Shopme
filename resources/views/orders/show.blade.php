@@ -37,7 +37,7 @@
                             <div class="flex-1">
                                 <h3 class="font-semibold">{{ $item->product_name }}</h3>
                                 <p class="text-gray-600 text-sm">Quantité: {{ $item->quantity }}</p>
-                                <p class="text-indigo-600 font-bold">{{ number_format($item->total, 2) }} €</p>
+                                <p class="text-indigo-600 font-bold">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
                             </div>
                         </div>
                     @endforeach
@@ -65,19 +65,19 @@
             <div class="space-y-2 mb-4">
                 <div class="flex justify-between">
                     <span>Sous-total</span>
-                    <span>{{ number_format($order->subtotal, 2) }} €</span>
+                    <span>{{ number_format($order->subtotal, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="flex justify-between">
                     <span>TVA</span>
-                    <span>{{ number_format($order->tax, 2) }} €</span>
+                    <span>{{ number_format($order->tax, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Livraison</span>
-                    <span>{{ number_format($order->shipping, 2) }} €</span>
+                    <span>{{ number_format($order->shipping, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="border-t pt-2 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span class="text-indigo-600">{{ number_format($order->total, 2) }} €</span>
+                    <span class="text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</span>
                 </div>
             </div>
             

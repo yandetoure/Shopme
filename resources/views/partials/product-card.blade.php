@@ -15,20 +15,6 @@
                 ⭐ Vedette
             </span>
         @endif
-
-        <!-- Bouton Favoris (visible au hover sur l'image) -->
-        @auth
-            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                @php
-                    $isFavorite = isset($favoriteIds) && in_array($product->id, $favoriteIds);
-                @endphp
-                <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite({{ $product->id }}, this)" 
-                        class="favorite-btn bg-white rounded-full p-2 shadow-lg hover:bg-red-50 transition"
-                        data-product-id="{{ $product->id }}">
-                    <i class="fas fa-heart {{ $isFavorite ? 'text-red-500' : 'text-gray-400' }}"></i>
-                </button>
-            </div>
-        @endauth
     </div>
     <div class="p-4">
         <a href="{{ route('products.show', $product->slug) }}">
@@ -37,10 +23,10 @@
         <div class="flex items-center justify-between mb-3">
             <div>
                 @if($product->is_on_sale)
-                    <span class="text-indigo-600 font-bold text-lg">{{ number_format($product->sale_price, 2) }} €</span>
-                    <span class="text-gray-400 line-through text-sm ml-2">{{ number_format($product->price, 2) }} €</span>
+                    <span class="text-indigo-600 font-bold text-lg">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-gray-400 line-through text-sm ml-2">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @else
-                    <span class="text-indigo-600 font-bold text-lg">{{ number_format($product->price, 2) }} €</span>
+                    <span class="text-indigo-600 font-bold text-lg">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @endif
             </div>
             @if(!$product->in_stock)
@@ -48,27 +34,42 @@
             @endif
         </div>
 
-        <!-- Bouton Ajouter au panier -->
-        @auth
-            @if($product->in_stock && $product->status === 'active')
-                <form action="{{ route('cart.add', $product->id) }}" method="POST" onsubmit="event.stopPropagation(); return true;">
-                    @csrf
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" onclick="event.stopPropagation();" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold flex items-center justify-center gap-2">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Ajouter au panier</span>
-                    </button>
-                </form>
-            @else
-                <button disabled class="w-full bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed font-semibold">
-                    Indisponible
+        <!-- Boutons d'action -->
+        <div class="flex items-center gap-2">
+            @auth
+                <!-- Bouton Favoris -->
+                @php
+                    $isFavorite = isset($favoriteIds) && in_array($product->id, $favoriteIds);
+                @endphp
+                <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite({{ $product->id }}, this)" 
+                        class="favorite-btn flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border-2 transition font-semibold {{ $isFavorite ? 'bg-red-50 border-red-500 text-red-600' : 'bg-gray-50 border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600' }}"
+                        data-product-id="{{ $product->id }}">
+                    <i class="fas fa-heart {{ $isFavorite ? 'text-red-500' : '' }}"></i>
+                    <span class="hidden sm:inline">{{ $isFavorite ? 'Favori' : 'Favoris' }}</span>
                 </button>
-            @endif
-        @else
-            <a href="{{ route('login') }}" onclick="event.stopPropagation();" class="block w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold text-center">
-                <i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier
-            </a>
-        @endauth
+
+                <!-- Bouton Ajouter au panier -->
+                @if($product->in_stock && $product->status === 'active')
+                    <form action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1" onsubmit="event.stopPropagation(); return true;">
+                        @csrf
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" onclick="event.stopPropagation();" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold flex items-center justify-center gap-2">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="hidden sm:inline">Ajouter</span>
+                        </button>
+                    </form>
+                @else
+                    <button disabled class="flex-1 bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed font-semibold">
+                        Indisponible
+                    </button>
+                @endif
+            @else
+                <!-- Bouton pour non connectés -->
+                <a href="{{ route('login') }}" onclick="event.stopPropagation();" class="flex-1 block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold text-center">
+                    <i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier
+                </a>
+            @endauth
+        </div>
     </div>
 </div>
 
@@ -88,12 +89,18 @@ if (typeof toggleFavorite === 'undefined') {
         .then(data => {
             if (data.success) {
                 const icon = button.querySelector('i');
+                const span = button.querySelector('span');
+                
                 if (data.isFavorite) {
-                    icon.classList.remove('text-gray-400');
+                    button.classList.remove('bg-gray-50', 'border-gray-300', 'text-gray-700');
+                    button.classList.add('bg-red-50', 'border-red-500', 'text-red-600');
                     icon.classList.add('text-red-500');
+                    if (span) span.textContent = 'Favori';
                 } else {
+                    button.classList.remove('bg-red-50', 'border-red-500', 'text-red-600');
+                    button.classList.add('bg-gray-50', 'border-gray-300', 'text-gray-700');
                     icon.classList.remove('text-red-500');
-                    icon.classList.add('text-gray-400');
+                    if (span) span.textContent = 'Favoris';
                 }
             }
         })

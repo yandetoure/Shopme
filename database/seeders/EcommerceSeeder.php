@@ -93,7 +93,7 @@ class EcommerceSeeder extends Seeder
             'sort_order' => 2,
         ]);
 
-        // Créer des produits
+        // Créer des produits (prix en FCFA)
         $products = [
             [
                 'name' => 'iPhone 15 Pro',
@@ -101,8 +101,8 @@ class EcommerceSeeder extends Seeder
                 'description' => 'Le dernier smartphone Apple avec écran ProMotion et puce A17 Pro.',
                 'short_description' => 'Smartphone haut de gamme avec écran 6.1 pouces',
                 'category_id' => $smartphones->id,
-                'price' => 1199.99,
-                'sale_price' => 1099.99,
+                'price' => 785000,
+                'sale_price' => 720000,
                 'is_on_sale' => true,
                 'stock_quantity' => 50,
                 'in_stock' => true,
@@ -115,7 +115,7 @@ class EcommerceSeeder extends Seeder
                 'description' => 'Smartphone Android avec écran AMOLED et appareil photo 108MP.',
                 'short_description' => 'Smartphone Android premium',
                 'category_id' => $smartphones->id,
-                'price' => 899.99,
+                'price' => 589000,
                 'stock_quantity' => 30,
                 'in_stock' => true,
                 'status' => 'active',
@@ -127,8 +127,8 @@ class EcommerceSeeder extends Seeder
                 'description' => 'Ordinateur portable Apple avec puce M3 Pro et écran Liquid Retina XDR.',
                 'short_description' => 'Ordinateur portable professionnel',
                 'category_id' => $laptops->id,
-                'price' => 2199.99,
-                'sale_price' => 1999.99,
+                'price' => 1440000,
+                'sale_price' => 1310000,
                 'is_on_sale' => true,
                 'stock_quantity' => 20,
                 'in_stock' => true,
@@ -141,7 +141,7 @@ class EcommerceSeeder extends Seeder
                 'description' => 'T-shirt en coton bio, confortable et durable.',
                 'short_description' => 'T-shirt en coton bio',
                 'category_id' => $men->id,
-                'price' => 29.99,
+                'price' => 19650,
                 'stock_quantity' => 100,
                 'in_stock' => true,
                 'status' => 'active',
@@ -152,8 +152,8 @@ class EcommerceSeeder extends Seeder
                 'description' => 'Robe élégante pour toutes occasions, confectionnée en tissu de qualité.',
                 'short_description' => 'Robe élégante polyvalente',
                 'category_id' => $women->id,
-                'price' => 79.99,
-                'sale_price' => 59.99,
+                'price' => 52400,
+                'sale_price' => 39300,
                 'is_on_sale' => true,
                 'stock_quantity' => 60,
                 'in_stock' => true,
@@ -165,7 +165,7 @@ class EcommerceSeeder extends Seeder
                 'description' => 'Canapé confortable avec revêtement en tissu résistant.',
                 'short_description' => 'Canapé 3 places confortable',
                 'category_id' => $home->id,
-                'price' => 899.99,
+                'price' => 589000,
                 'stock_quantity' => 10,
                 'in_stock' => true,
                 'status' => 'active',

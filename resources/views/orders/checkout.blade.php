@@ -100,7 +100,7 @@
                         <div class="flex-1">
                             <h3 class="font-semibold text-sm">{{ $item->product->name }}</h3>
                             <p class="text-gray-600 text-xs">x{{ $item->quantity }}</p>
-                            <p class="text-indigo-600 font-bold text-sm">{{ number_format($item->total, 2) }} €</p>
+                            <p class="text-indigo-600 font-bold text-sm">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
                         </div>
                     </div>
                 @endforeach
@@ -108,19 +108,19 @@
             <div class="space-y-2 mb-4">
                 <div class="flex justify-between">
                     <span>Sous-total</span>
-                    <span>{{ number_format($subtotal, 2) }} €</span>
+                    <span>{{ number_format($subtotal, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="flex justify-between text-gray-600">
                     <span>TVA (20%)</span>
-                    <span>{{ number_format($tax, 2) }} €</span>
+                    <span>{{ number_format($tax, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="flex justify-between text-gray-600">
                     <span>Livraison</span>
-                    <span>{{ number_format($shipping, 2) }} €</span>
+                    <span>{{ number_format($shipping, 0, ',', ' ') }} FCFA</span>
                 </div>
                 <div class="border-t pt-2 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span class="text-indigo-600">{{ number_format($total, 2) }} €</span>
+                    <span class="text-indigo-600">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@
                             <p class="text-gray-600 text-sm">{{ $order->items->count() }} article(s)</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-bold text-indigo-600">{{ number_format($order->total, 2) }} €</p>
+                            <p class="text-2xl font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
                             <span class="inline-block px-3 py-1 rounded-full text-sm mt-2
                                 @if($order->status == 'delivered') bg-green-100 text-green-800
                                 @elseif($order->status == 'shipped') bg-blue-100 text-blue-800

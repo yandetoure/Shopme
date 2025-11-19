@@ -121,7 +121,7 @@
                                             <p class="text-sm text-gray-600">{{ $order->created_at->format('d/m/Y H:i') }}</p>
                                         </div>
                                         <div class="text-right">
-                                            <p class="font-bold text-indigo-600">{{ number_format($order->total, 2) }} €</p>
+                                            <p class="font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
                                             <span class="text-sm px-2 py-1 rounded 
                                                 @if($order->status == 'delivered') bg-green-100 text-green-800
                                                 @elseif($order->status == 'shipped') bg-blue-100 text-blue-800

@@ -26,14 +26,14 @@
             <div class="mb-6">
                 @if($product->is_on_sale)
                     <div class="flex items-center gap-4">
-                        <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->sale_price, 2) }} €</span>
-                        <span class="text-xl text-gray-400 line-through">{{ number_format($product->price, 2) }} €</span>
+                        <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
+                        <span class="text-xl text-gray-400 line-through">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                         <span class="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold">
                             -{{ $product->discount_percentage }}%
                         </span>
                     </div>
                 @else
-                    <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->price, 2) }} €</span>
+                    <span class="text-3xl font-bold text-indigo-600">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @endif
             </div>
 

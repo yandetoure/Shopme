@@ -20,7 +20,7 @@
                             <a href="{{ route('products.show', $item->product->slug) }}" class="font-semibold text-gray-800 hover:text-indigo-600">
                                 {{ $item->product->name }}
                             </a>
-                            <p class="text-indigo-600 font-bold mt-2">{{ number_format($item->price, 2) }} €</p>
+                            <p class="text-indigo-600 font-bold mt-2">{{ number_format($item->price, 0, ',', ' ') }} FCFA</p>
                             
                             <div class="mt-4 flex items-center gap-4">
                                 <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center gap-2">
@@ -30,7 +30,7 @@
                                            class="w-20 px-2 py-1 border rounded" onchange="this.form.submit()">
                                 </form>
                                 
-                                <span class="font-semibold">{{ number_format($item->total, 2) }} €</span>
+                                <span class="font-semibold">{{ number_format($item->total, 0, ',', ' ') }} FCFA</span>
                                 
                                 <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="ml-auto">
                                     @csrf
@@ -51,15 +51,15 @@
                 <div class="space-y-2 mb-4">
                     <div class="flex justify-between">
                         <span>Sous-total</span>
-                        <span>{{ number_format($total, 2) }} €</span>
+                        <span>{{ number_format($total, 0, ',', ' ') }} FCFA</span>
                     </div>
                     <div class="flex justify-between text-gray-600">
                         <span>Livraison</span>
-                        <span>10,00 €</span>
+                        <span>6 550 FCFA</span>
                     </div>
                     <div class="border-t pt-2 flex justify-between font-bold text-lg">
                         <span>Total</span>
-                        <span class="text-indigo-600">{{ number_format($total + 10, 2) }} €</span>
+                        <span class="text-indigo-600">{{ number_format($total + 6550, 0, ',', ' ') }} FCFA</span>
                     </div>
                 </div>
                 
