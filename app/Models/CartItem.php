@@ -10,6 +10,8 @@ class CartItem extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'variation_id',
+        'selected_attributes',
         'quantity',
         'price',
     ];
@@ -17,6 +19,7 @@ class CartItem extends Model
     protected $casts = [
         'quantity' => 'integer',
         'price' => 'decimal:2',
+        'selected_attributes' => 'array',
     ];
 
     /**
@@ -33,6 +36,14 @@ class CartItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Relation avec la variation
+     */
+    public function variation(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariation::class, 'variation_id');
     }
 
     /**

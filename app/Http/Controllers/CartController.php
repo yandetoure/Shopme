@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\ProductVariation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Auth::user()->cartItems()->with('product')->get();
+        $cartItems = Auth::user()->cartItems()->with(['product', 'variation'])->get();
         $total = $cartItems->sum(function($item) {
             return $item->total;
         });
@@ -23,30 +24,65 @@ class CartController extends Controller
     {
         $product = Product::findOrFail($productId);
         
+        $variationId = $request->input('variation_id');
+        $selectedAttributes = json_decode($request->input('selected_attributes', '{}'), true);
+        
+        // Déterminer le prix et le stock selon la variation ou le produit
+        $variation = null;
+        $stockQuantity = $product->stock_quantity;
+        $price = $product->display_price;
+        
+        if ($variationId) {
+            $variation = ProductVariation::where('id', $variationId)
+                ->where('product_id', $product->id)
+                ->firstOrFail();
+            
+            if (!$variation->in_stock || !$variation->stock_quantity) {
+                return back()->with('error', 'Cette variation n\'est pas disponible.');
+            }
+            
+            $stockQuantity = $variation->stock_quantity;
+            $price = $variation->display_price;
+        }
+        
         $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $product->stock_quantity
+            'quantity' => 'required|integer|min:1|max:' . $stockQuantity
         ]);
 
         if (!$product->in_stock || $product->status !== 'active') {
             return back()->with('error', 'Ce produit n\'est pas disponible.');
         }
 
-        $cartItem = CartItem::firstOrNew([
-            'user_id' => Auth::id(),
-            'product_id' => $product->id
-        ]);
+        // Rechercher un article du panier avec le même produit et la même variation
+        $cartItemQuery = CartItem::where('user_id', Auth::id())
+            ->where('product_id', $product->id);
+        
+        if ($variationId) {
+            $cartItemQuery->where('variation_id', $variationId);
+        } else {
+            $cartItemQuery->whereNull('variation_id');
+        }
+        
+        $cartItem = $cartItemQuery->first();
 
-        if ($cartItem->exists) {
+        if ($cartItem) {
             $newQuantity = $cartItem->quantity + $request->quantity;
-            if ($newQuantity > $product->stock_quantity) {
+            if ($newQuantity > $stockQuantity) {
                 return back()->with('error', 'Quantité en stock insuffisante.');
             }
             $cartItem->quantity = $newQuantity;
         } else {
-            $cartItem->quantity = $request->quantity;
+            $cartItem = new CartItem([
+                'user_id' => Auth::id(),
+                'product_id' => $product->id,
+                'variation_id' => $variationId,
+                'selected_attributes' => !empty($selectedAttributes) ? $selectedAttributes : null,
+                'quantity' => $request->quantity,
+                'price' => $price,
+            ]);
         }
 
-        $cartItem->price = $product->display_price;
+        $cartItem->price = $price;
         $cartItem->save();
 
         return back()->with('success', 'Produit ajouté au panier avec succès.');
@@ -60,12 +96,24 @@ class CartController extends Controller
             abort(403);
         }
 
+        // Déterminer le stock selon la variation ou le produit
+        $stockQuantity = $cartItem->variation 
+            ? $cartItem->variation->stock_quantity 
+            : $cartItem->product->stock_quantity;
+        
         $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $cartItem->product->stock_quantity
+            'quantity' => 'required|integer|min:1|max:' . $stockQuantity
         ]);
 
         $cartItem->quantity = $request->quantity;
-        $cartItem->price = $cartItem->product->display_price;
+        
+        // Mettre à jour le prix selon la variation ou le produit
+        if ($cartItem->variation) {
+            $cartItem->price = $cartItem->variation->display_price;
+        } else {
+            $cartItem->price = $cartItem->product->display_price;
+        }
+        
         $cartItem->save();
 
         return back()->with('success', 'Panier mis à jour avec succès.');

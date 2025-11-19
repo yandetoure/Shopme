@@ -84,6 +84,22 @@ class Product extends Model
     }
 
     /**
+     * Relation avec les attributs
+     */
+    public function productAttributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class)->where('is_active', true)->orderBy('sort_order');
+    }
+
+    /**
+     * Relation avec les variations
+     */
+    public function variations(): HasMany
+    {
+        return $this->hasMany(ProductVariation::class)->orderBy('sort_order');
+    }
+
+    /**
      * Obtenir le prix à afficher (prix de vente ou prix normal)
      */
     public function getDisplayPriceAttribute()

@@ -9,8 +9,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Formulaire de commande -->
         <div class="md:col-span-2">
-            <form method="POST" action="{{ route('orders.store') }}" class="bg-white rounded-lg shadow-md p-4 space-y-4">
+            <form method="POST" action="{{ route('orders.store') }}" id="checkout-form" class="bg-white rounded-lg shadow-md p-4 space-y-4">
                 @csrf
+                <input type="hidden" name="coupon_code" value="{{ request('coupon_code') }}">
+                <input type="hidden" name="shipping_rate_id" id="shipping_rate_id_input" value="{{ isset($shippingRate) ? $shippingRate->id : '' }}">
                 
                 <h2 class="text-lg font-bold mb-3">Informations de livraison</h2>
                 
@@ -94,17 +96,81 @@
             <div class="space-y-3 mb-4">
                 @foreach($cartItems as $item)
                     <div class="flex gap-3 pb-3 border-b">
-                        <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : 'https://via.placeholder.com/60?text=' . urlencode($item->product->name) }}" 
+                        <img src="{{ ($item->variation && $item->variation->image) ? asset('storage/' . $item->variation->image) : ($item->product->image ? asset('storage/' . $item->product->image) : 'https://via.placeholder.com/60?text=' . urlencode($item->product->name)) }}" 
                              alt="{{ $item->product->name }}" 
                              class="w-14 h-14 object-cover rounded">
                         <div class="flex-1">
                             <h3 class="font-semibold text-xs">{{ $item->product->name }}</h3>
+                            @if($item->selected_attributes && count($item->selected_attributes) > 0)
+                                <p class="text-gray-500 text-xs">
+                                    @foreach($item->selected_attributes as $key => $value)
+                                        {{ ucfirst($key) }}: {{ $value }}@if(!$loop->last), @endif
+                                    @endforeach
+                                </p>
+                            @endif
                             <p class="text-gray-600 text-xs">x{{ $item->quantity }}</p>
                             <p class="text-orange-600 font-bold text-xs">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
                         </div>
                     </div>
                 @endforeach
             </div>
+            
+            <!-- Code promo -->
+            <div class="mb-4 border-t pt-3">
+                <form method="GET" action="{{ route('orders.checkout') }}" id="coupon-form" 
+                      x-data="{ couponCode: '{{ request('coupon_code') ?? '' }}', loading: false }">
+                    <label for="coupon_code" class="block text-xs font-medium mb-1">Code promo</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="coupon_code" name="coupon_code" x-model="coupon_code"
+                               placeholder="Entrez votre code"
+                               class="flex-1 px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
+                        <button type="submit" @click="loading = true" :disabled="loading"
+                                class="px-4 py-1.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-xs font-medium disabled:opacity-50">
+                            <span x-show="!loading">Appliquer</span>
+                            <span x-show="loading">...</span>
+                        </button>
+                    </div>
+                    @if(request()->coupon_code && !$coupon)
+                        <p class="text-red-500 text-xs mt-1">Code promo invalide.</p>
+                    @endif
+                    @if($coupon && $discount > 0)
+                        <p class="text-green-600 text-xs mt-1 font-medium">Code promo appliqué : -{{ number_format($discount, 0, ',', ' ') }} FCFA</p>
+                    @endif
+                    @if(request()->coupon_code && $coupon)
+                        <a href="{{ route('orders.checkout') }}" class="text-xs text-red-600 hover:underline mt-1 block">Retirer le code promo</a>
+                    @endif
+                </form>
+            </div>
+            
+            <!-- Tarifs de livraison -->
+            @if(isset($shippingRates) && $shippingRates->count() > 1)
+            <div class="mb-4 border-t pt-3">
+                <label for="shipping_rate_select" class="block text-xs font-medium mb-2">Méthode de livraison</label>
+                <select id="shipping_rate_select" 
+                        class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500"
+                        onchange="document.getElementById('shipping_rate_id_input').value = this.value; window.location.href = '{{ route('orders.checkout') }}?coupon_code=' + encodeURIComponent('{{ request('coupon_code') ?? '' }}') + '&shipping_rate_id=' + this.value;">
+                    @foreach($shippingRates as $rate)
+                        <option value="{{ $rate->id }}" 
+                                {{ (isset($shippingRate) && $shippingRate->id === $rate->id) || (!isset($shippingRate) && $loop->first) ? 'selected' : '' }}
+                                data-price="{{ $rate->is_free ? 0 : $rate->price }}">
+                            {{ $rate->name }} - 
+                            @if($rate->is_free)
+                                Gratuit
+                            @else
+                                {{ number_format($rate->price, 0, ',', ' ') }} FCFA
+                            @endif
+                            @if($rate->estimated_days)
+                                ({{ $rate->estimated_days }} jours)
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+                <input type="hidden" name="shipping_rate_id" value="{{ isset($shippingRate) ? $shippingRate->id : ($shippingRates->first()->id ?? '') }}">
+            </div>
+            @elseif(isset($shippingRate))
+                <input type="hidden" name="shipping_rate_id" value="{{ $shippingRate->id }}">
+            @endif
+            
             <div class="space-y-1.5 mb-3 text-sm">
                 <div class="flex justify-between">
                     <span>Sous-total</span>
@@ -114,9 +180,21 @@
                     <span>TVA (20%)</span>
                     <span>{{ number_format($tax, 0, ',', ' ') }} FCFA</span>
                 </div>
+                @if($discount > 0)
+                <div class="flex justify-between text-green-600">
+                    <span>Remise ({{ $coupon->code ?? '' }})</span>
+                    <span>-{{ number_format($discount, 0, ',', ' ') }} FCFA</span>
+                </div>
+                @endif
                 <div class="flex justify-between text-gray-600">
                     <span>Livraison</span>
-                    <span>{{ number_format($shipping, 0, ',', ' ') }} FCFA</span>
+                    <span>
+                        @if($shipping == 0)
+                            <span class="text-green-600">Gratuit</span>
+                        @else
+                            {{ number_format($shipping, 0, ',', ' ') }} FCFA
+                        @endif
+                    </span>
                 </div>
                 <div class="border-t pt-1.5 flex justify-between font-bold text-base">
                     <span>Total</span>

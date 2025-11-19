@@ -64,7 +64,7 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)
             ->active()
-            ->with(['category', 'categories'])
+            ->with(['category', 'categories', 'productAttributes.values', 'variations'])
             ->firstOrFail();
 
         // Incrémenter les vues

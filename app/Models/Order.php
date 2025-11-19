@@ -16,6 +16,11 @@ class Order extends Model
         'subtotal',
         'tax',
         'shipping',
+        'shipping_rate_id',
+        'coupon_id',
+        'coupon_code',
+        'discount',
+        'discount_amount',
         'total',
         'payment_method',
         'payment_status',
@@ -32,6 +37,8 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'tax' => 'decimal:2',
         'shipping' => 'decimal:2',
+        'discount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'total' => 'decimal:2',
     ];
 
@@ -60,6 +67,30 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Relation avec le tarif de livraison
+     */
+    public function shippingRate(): BelongsTo
+    {
+        return $this->belongsTo(ShippingRate::class);
+    }
+
+    /**
+     * Relation avec le coupon
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    /**
+     * Relation avec les utilisations de coupon
+     */
+    public function couponUsages(): HasMany
+    {
+        return $this->hasMany(CouponUsage::class);
     }
 
     /**

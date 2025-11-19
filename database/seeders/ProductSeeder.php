@@ -60,8 +60,8 @@ class ProductSeeder extends Seeder
                     ['slug' => Str::slug($productName . ' ' . $category->slug . ' ' . $i . ' ' . Str::random(4))],
                     [
                         'name' => $productName,
-                        'description' => $faker->paragraphs(rand(2, 4), true),
-                        'short_description' => $faker->sentence(rand(8, 15)),
+                        'description' => $this->generateFrenchDescription($category, $faker),
+                        'short_description' => $this->generateFrenchShortDescription($category, $faker),
                         'category_id' => $category->id, // Catégorie principale
                         'price' => $price,
                         'sale_price' => $salePrice,
@@ -221,5 +221,124 @@ class ProductSeeder extends Seeder
         } else {
             return rand(5000, 200000); // Par défaut : 5k à 200k FCFA
         }
+    }
+
+    /**
+     * Générer une description courte en français
+     */
+    private function generateFrenchShortDescription(Category $category, $faker): string
+    {
+        $categoryName = strtolower($category->name);
+        $descriptions = [
+            'chambre' => [
+                'Parfait pour embellir votre chambre avec style et confort.',
+                'Ajoutez une touche d\'élégance à votre espace de détente.',
+                'Conçu pour votre confort et votre bien-être quotidien.',
+                'Décoration moderne pour créer une atmosphère chaleureuse.',
+                'Qualité supérieure pour un repos optimal.',
+            ],
+            'cuisine' => [
+                'Idéal pour faciliter votre quotidien en cuisine.',
+                'Fonctionnel et pratique pour toutes vos préparations.',
+                'Haute qualité pour des résultats professionnels.',
+                'Révolutionnez votre expérience culinaire.',
+                'Design moderne pour une cuisine contemporaine.',
+            ],
+            'toilette' => [
+                'Transformez votre salle de bain en espace spa.',
+                'Confort et élégance pour vos moments de détente.',
+                'Qualité premium pour une hygiène optimale.',
+                'Organisez votre espace avec style.',
+                'Luxe et praticité pour votre bien-être.',
+            ],
+            'jardin' => [
+                'Donnez vie à votre jardin avec nos produits de qualité.',
+                'Créez un espace vert magnifique et accueillant.',
+                'Parfait pour les amoureux de la nature.',
+                'Durabilité et esthétique pour l\'extérieur.',
+                'Transformez votre extérieur en paradis vert.',
+            ],
+            'maison' => [
+                'Embellissez votre intérieur avec élégance.',
+                'Qualité exceptionnelle pour votre foyer.',
+                'Design contemporain pour un style unique.',
+                'Créez une ambiance chaleureuse et accueillante.',
+                'Fonctionnalité et esthétique pour votre maison.',
+            ],
+            'informatique' => [
+                'Performance et fiabilité pour vos besoins technologiques.',
+                'Technologie de pointe pour une productivité optimale.',
+                'Innovation au service de votre productivité.',
+                'Haute performance pour professionnels et particuliers.',
+                'Solutions informatiques modernes et efficaces.',
+            ],
+            'vêtements' => [
+                'Style et confort pour toutes les occasions.',
+                'Tendance et qualité pour votre garde-robe.',
+                'Mode actuelle avec une finition soignée.',
+                'Confortable et élégant pour votre quotidien.',
+                'Qualité textile supérieure pour un look impeccable.',
+            ],
+        ];
+
+        foreach ($descriptions as $key => $descArray) {
+            if (str_contains($categoryName, $key)) {
+                return $descArray[array_rand($descArray)];
+            }
+        }
+
+        return $faker->sentence(rand(8, 12));
+    }
+
+    /**
+     * Générer une description détaillée en français
+     */
+    private function generateFrenchDescription(Category $category, $faker): string
+    {
+        $categoryName = strtolower($category->name);
+        $slug = strtolower($category->slug);
+        
+        $descriptions = [
+            'chambre' => [
+                'Découvrez ce produit exceptionnel qui transformera votre chambre en un véritable havre de paix. Conçu avec des matériaux de haute qualité, il offre un confort optimal et une durabilité à toute épreuve. Son design élégant s\'intègre parfaitement dans tous les styles de décoration, du moderne au classique. Facile à entretenir, il vous accompagnera pendant de nombreuses années.',
+                'Ce produit de qualité supérieure est spécialement conçu pour embellir votre espace de repos. Avec ses finitions soignées et son design raffiné, il apportera une touche d\'élégance à votre chambre. Pratique et fonctionnel, il répond à tous vos besoins en matière de confort et d\'organisation.',
+            ],
+            'cuisine' => [
+                'Révolutionnez votre expérience culinaire avec ce produit innovant. Conçu pour faciliter votre quotidien en cuisine, il combine fonctionnalité et design moderne. Les matériaux de haute qualité garantissent une utilisation durable et efficace. Que vous soyez débutant ou chef expérimenté, ce produit répondra à toutes vos attentes.',
+                'Ce produit de cuisine professionnel vous permet de réaliser vos recettes avec précision et facilité. Sa conception ergonomique et ses matériaux résistants en font un allié indispensable de votre cuisine. Facile à utiliser et à nettoyer, il vous fera gagner du temps au quotidien.',
+            ],
+            'toilette' => [
+                'Transformez votre salle de bain en un véritable espace de bien-être avec ce produit haut de gamme. Conçu pour votre confort et votre hygiène, il allie esthétique moderne et fonctionnalité pratique. Les matériaux de qualité supérieure garantissent une longue durée de vie et une facilité d\'entretien.',
+                'Découvrez le confort et l\'élégance avec ce produit premium pour votre salle de bain. Son design soigné et ses finitions de qualité apporteront une touche de luxe à votre espace. Pratique et résistant, il répond à tous vos besoins quotidiens en matière d\'hygiène et de bien-être.',
+            ],
+            'jardin' => [
+                'Donnez vie à votre jardin avec ce produit de qualité exceptionnelle. Conçu pour l\'extérieur, il résiste aux intempéries tout en conservant son esthétique. Facile à installer et à entretenir, il vous permettra de créer un espace vert magnifique et accueillant. Parfait pour les amoureux de la nature et du jardinage.',
+                'Ce produit extérieur transformera votre jardin en un véritable paradis végétal. Sa conception robuste et ses matériaux durables garantissent une utilisation longue durée. Esthétique et fonctionnel, il s\'intègre parfaitement dans tous les styles de jardinage, du moderne au traditionnel.',
+            ],
+            'maison' => [
+                'Embellissez votre intérieur avec ce produit au design contemporain et élégant. Conçu pour créer une ambiance chaleureuse et accueillante, il s\'adapte à tous les styles de décoration. Les matériaux de qualité supérieure garantissent à la fois esthétique et durabilité. Facile à entretenir, il apportera une touche de sophistication à votre foyer.',
+                'Ce produit d\'exception transformera votre espace de vie en un lieu raffiné et accueillant. Son design soigné et ses finitions de qualité apporteront une valeur ajoutée à votre intérieur. Fonctionnel et esthétique, il répond à tous vos besoins en matière de décoration et de confort.',
+            ],
+            'informatique' => [
+                'Découvrez une expérience technologique exceptionnelle avec ce produit informatique de dernière génération. Conçu pour offrir des performances optimales, il répond aux besoins des professionnels comme des particuliers. Sa technologie de pointe garantit rapidité, fiabilité et efficacité dans toutes vos tâches quotidiennes.',
+                'Ce produit informatique combine innovation et performance pour une productivité maximale. Avec ses caractéristiques techniques avancées et son design ergonomique, il vous accompagnera dans tous vos projets. Facile à utiliser et à configurer, il s\'adapte à tous vos besoins professionnels et personnels.',
+            ],
+            'vêtements' => [
+                'Adoptez un style tendance et élégant avec ce produit de mode soigneusement conçu. Les textiles de qualité supérieure garantissent confort et durabilité. Son design actuel et ses finitions soignées en font un incontournable de votre garde-robe. Parfait pour toutes les occasions, il allie style et praticité.',
+                'Ce produit de mode vous permettra d\'exprimer votre personnalité avec élégance. Conçu avec des matières de qualité et un souci du détail, il offre un confort optimal au quotidien. Son style intemporel et sa finition impeccable en font un investissement durable pour votre garde-robe.',
+            ],
+        ];
+
+        foreach ($descriptions as $key => $descArray) {
+            if (str_contains($categoryName, $key) || str_contains($slug, $key)) {
+                return $descArray[array_rand($descArray)];
+            }
+        }
+
+        // Description générique en français si aucune correspondance
+        return 'Découvrez ce produit de qualité supérieure, conçu pour répondre à tous vos besoins. ' .
+               'Avec ses caractéristiques exceptionnelles et son design soigné, il vous offrira satisfaction et performance. ' .
+               'Les matériaux de haute qualité garantissent une utilisation durable et efficace. ' .
+               'Facile à utiliser et à entretenir, ce produit deviendra rapidement indispensable dans votre quotidien.';
     }
 }

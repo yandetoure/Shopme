@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,         // Les catégories doivent exister avant les produits
             UserSeeder::class,             // Les utilisateurs peuvent être créés après les rôles
             ProductSeeder::class,          // Les produits nécessitent les catégories
+            ShippingRateSeeder::class,     // Tarifs de livraison
+            CouponSeeder::class,           // Codes promo
         ]);
     }
 }
