@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1); 
 
 namespace App\Http\Controllers;
 
@@ -60,12 +60,28 @@ class HomeController extends Controller
             }
         }
 
+        // Produits vedettes pour la section hero carousel (3 produits avec les plus grandes promotions)
+        $heroProducts = Product::active()
+            ->onSale()
+            ->whereNotNull('image')
+            ->orderByRaw('((price - sale_price) / price) DESC')
+            ->limit(3)
+            ->get();
+
+        // Produits pour ventes flash (carousel horizontal)
+        $flashSaleProducts = Product::active()
+            ->onSale()
+            ->whereNotNull('image')
+            ->orderByRaw('((price - sale_price) / price) DESC')
+            ->limit(10)
+            ->get();
+
         // Récupérer les IDs des favoris si l'utilisateur est connecté
         $favoriteIds = [];
         if (Auth::check()) {
             $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
         }
 
-        return view('home', compact('categories', 'featuredProducts', 'onSaleProducts', 'latestProducts', 'categoryProducts', 'favoriteIds'));
+        return view('home', compact('categories', 'featuredProducts', 'onSaleProducts', 'latestProducts', 'categoryProducts', 'heroProducts', 'flashSaleProducts', 'favoriteIds'));
     }
 }
