@@ -48,19 +48,19 @@
 
     <!-- Sous-catégories sœurs (si elles existent) -->
     @if($category->parent && $category->parent->children->count() > 1)
-        <div class="mb-6">
-            <h2 class="text-base font-semibold mb-3 text-gray-800">Autres sous-catégories</h2>
-            <div class="flex flex-wrap gap-2">
+        <div class="mb-4 bg-white rounded-lg shadow-md p-3">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">Sous-catégories:</span>
                 @foreach($category->parent->children as $sibling)
-                    @if($sibling->id !== $category->id)
-                        <a href="{{ route('category.subcategory', [$category->parent->slug, $sibling->slug]) }}" 
-                           class="px-3 py-1.5 text-xs bg-white border border-gray-200 rounded-lg hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50 transition {{ $sibling->id === $category->id ? 'border-orange-500 text-orange-600 bg-orange-50' : '' }}">
-                            {{ $sibling->name }}
-                        </a>
-                    @else
-                        <span class="px-3 py-1.5 text-xs bg-orange-500 text-white border border-orange-500 rounded-lg font-medium">
+                    @if($sibling->id === $category->id)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-orange-500 text-white font-medium">
                             {{ $sibling->name }}
                         </span>
+                    @else
+                        <a href="{{ route('category.subcategory', [$category->parent->slug, $sibling->slug]) }}" 
+                           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-gray-50 hover:bg-orange-50 hover:text-orange-600 border border-transparent hover:border-orange-200 transition">
+                            {{ $sibling->name }}
+                        </a>
                     @endif
                 @endforeach
             </div>

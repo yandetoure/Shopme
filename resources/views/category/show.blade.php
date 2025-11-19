@@ -23,23 +23,20 @@
 
     <!-- Sous-catégories -->
     @if($category->children->count() > 0)
-        <div class="mb-6 bg-white rounded-lg shadow-md p-4">
-            <h2 class="text-lg font-semibold mb-4 text-gray-800">Sous-catégories</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div class="mb-4 bg-white rounded-lg shadow-md p-3">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">Sous-catégories:</span>
                 @foreach($category->children as $child)
+                    @php
+                        $childProductCount = \App\Models\Product::whereHas('categories', function($q) use ($child) {
+                            $q->where('categories.id', $child->id);
+                        })->active()->count();
+                    @endphp
                     <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" 
-                       class="bg-gray-50 rounded-lg p-3 text-center hover:bg-orange-50 hover:shadow-md transition border border-transparent hover:border-orange-200 group">
-                        <div class="w-12 h-12 bg-orange-100 rounded-full mx-auto mb-2 flex items-center justify-center group-hover:bg-orange-500 transition">
-                            <i class="fas fa-tag text-orange-600 group-hover:text-white text-sm"></i>
-                        </div>
-                        <h3 class="font-medium text-gray-800 group-hover:text-orange-600 text-xs leading-tight">{{ $child->name }}</h3>
-                        @php
-                            $childProductCount = \App\Models\Product::whereHas('categories', function($q) use ($child) {
-                                $q->where('categories.id', $child->id);
-                            })->active()->count();
-                        @endphp
+                       class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-gray-50 hover:bg-orange-50 hover:text-orange-600 border border-transparent hover:border-orange-200 transition">
+                        <span>{{ $child->name }}</span>
                         @if($childProductCount > 0)
-                            <p class="text-xs text-gray-500 mt-1">{{ $childProductCount }} produit(s)</p>
+                            <span class="text-xs text-gray-500">({{ $childProductCount }})</span>
                         @endif
                     </a>
                 @endforeach
