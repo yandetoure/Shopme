@@ -17,14 +17,56 @@
     <nav class="bg-white shadow-md sticky top-0 z-50 hidden md:block">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <a href="{{ route('home') }}" class="text-2xl font-bold text-indigo-600">ShopMe</a>
+                <a href="{{ route('home') }}" class="flex items-center">
+                    <img src="{{ asset('images/logo.png') }}" alt="ShopMe" class="h-10">
+                </a>
                 
-                <div class="flex-1 max-w-xl mx-8">
+                <!-- Navigation principale -->
+                <div class="flex items-center space-x-6">
+                    <a href="{{ route('home') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('home') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">Accueil</a>
+                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('products.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">Produits</a>
+                    
+                    <!-- Dropdown Catégories -->
+                    @if(isset($navCategories) && $navCategories->count() > 0)
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-orange-500 font-medium flex items-center {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                            Catégories
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            @foreach($navCategories as $category)
+                                @if($category->children->count() > 0)
+                                    <!-- Catégorie avec sous-catégories -->
+                                    <div class="px-4 py-2 border-b border-gray-100 last:border-b-0">
+                                        <a href="{{ route('category.show', $category->slug) }}" class="text-sm font-semibold text-gray-800 hover:text-orange-500 block mb-2">
+                                            {{ $category->name }}
+                                        </a>
+                                        <div class="pl-3 space-y-1">
+                                            @foreach($category->children as $child)
+                                                <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block text-xs text-gray-600 hover:text-orange-500 py-1">
+                                                    {{ $child->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <!-- Catégorie sans sous-catégories -->
+                                    <a href="{{ route('category.show', $category->slug) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-500">
+                                        {{ $category->name }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                
+                <div class="flex-1 max-w-md mx-4">
                     <form action="{{ route('products.index') }}" method="GET" class="relative">
                         <input type="text" name="search" value="{{ request('search') }}" 
-                               placeholder="Rechercher un produit..." 
-                               class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                        <button type="submit" class="absolute right-2 top-2 text-gray-400 hover:text-indigo-600">
+                               placeholder="Rechercher..." 
+                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <button type="submit" class="absolute right-2 top-1.5 text-gray-400 hover:text-orange-500 text-sm">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
@@ -32,7 +74,7 @@
 
                 <div class="flex items-center space-x-6">
                     @auth
-                        <a href="{{ route('favorites.index') }}" class="relative text-gray-700 hover:text-indigo-600">
+                        <a href="{{ route('favorites.index') }}" class="relative text-gray-700 hover:text-orange-500">
                             <i class="fas fa-heart text-xl"></i>
                             @if(auth()->user()->favorites()->count() > 0)
                                 <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -40,19 +82,19 @@
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-indigo-600">
+                        <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-orange-500">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
-                                <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                     {{ auth()->user()->cartItems()->count() }}
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-indigo-600">
+                        <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-orange-500">
                             <i class="fas fa-box text-xl"></i>
                         </a>
                         <div class="relative group">
-                            <button class="flex items-center space-x-2 text-gray-700 hover:text-indigo-600">
+                            <button class="flex items-center space-x-2 text-gray-700 hover:text-orange-500">
                                 <i class="fas fa-user-circle text-xl"></i>
                                 <span>{{ Auth::user()->name }}</span>
                             </button>
@@ -65,8 +107,8 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600">Connexion</a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Inscription</a>
+                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-orange-500">Connexion</a>
+                        <a href="{{ route('register') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Inscription</a>
                     @endauth
                 </div>
             </div>
@@ -77,7 +119,9 @@
     <nav class="bg-white shadow-md sticky top-0 z-50 md:hidden" x-data="{ open: false }">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">ShopMe</a>
+                <a href="{{ route('home') }}" class="flex items-center">
+                    <img src="{{ asset('images/logo.png') }}" alt="ShopMe" class="h-8">
+                </a>
                 <div class="flex items-center space-x-4">
                     @auth
                         <a href="{{ route('favorites.index') }}" class="relative text-gray-700 mr-2">
@@ -91,7 +135,7 @@
                         <a href="{{ route('cart.index') }}" class="relative text-gray-700 mr-2">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
-                                <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                     {{ auth()->user()->cartItems()->count() }}
                                 </span>
                             @endif
@@ -106,9 +150,36 @@
                 <form action="{{ route('products.index') }}" method="GET" class="mb-4">
                     <input type="text" name="search" value="{{ request('search') }}" 
                            placeholder="Rechercher..." 
-                           class="w-full px-4 py-2 border rounded-lg">
+                           class="w-full px-3 py-1.5 text-sm border rounded-lg">
                 </form>
                 <div class="space-y-2">
+                    <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Accueil</a>
+                    <a href="{{ route('products.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Produits</a>
+                    
+                    <!-- Catégories mobile -->
+                    @if(isset($navCategories) && $navCategories->count() > 0)
+                        <div x-data="{ openCategories: false }">
+                            <button @click="openCategories = !openCategories" class="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
+                                <span>Catégories</span>
+                                <i class="fas fa-chevron-down text-xs" :class="{ 'rotate-180': openCategories }"></i>
+                            </button>
+                            <div x-show="openCategories" x-cloak class="pl-4 space-y-1">
+                                @foreach($navCategories as $category)
+                                    <a href="{{ route('category.show', $category->slug) }}" class="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded">
+                                        {{ $category->name }}
+                                    </a>
+                                    @if($category->children->count() > 0)
+                                        @foreach($category->children as $child)
+                                            <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block px-6 py-1 text-xs text-gray-500 hover:bg-gray-100 rounded">
+                                                {{ $child->name }}
+                                            </a>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    
                     @auth
                         <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mon Profil</a>
                         <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mes Favoris</a>
@@ -119,7 +190,7 @@
                         </form>
                     @else
                         <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Connexion</a>
-                        <a href="{{ route('register') }}" class="block px-4 py-2 bg-indigo-600 text-white rounded">Inscription</a>
+                        <a href="{{ route('register') }}" class="block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Inscription</a>
                     @endauth
                 </div>
             </div>

@@ -17,7 +17,7 @@
                             <p class="text-gray-600 text-xs">{{ $order->items->count() }} article(s)</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-lg font-bold text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
+                            <p class="text-lg font-bold text-orange-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</p>
                             <span class="inline-block px-2 py-1 rounded-full text-xs mt-2
                                 @if($order->status == 'delivered') bg-green-100 text-green-800
                                 @elseif($order->status == 'shipped') bg-blue-100 text-blue-800
@@ -40,7 +40,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-box-open text-gray-400 text-6xl mb-4"></i>
             <p class="text-gray-600 mb-4">Vous n'avez pas encore passé de commande.</p>
-            <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+            <a href="{{ route('products.index') }}" class="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600">
                 Découvrir les produits
             </a>
         </div>

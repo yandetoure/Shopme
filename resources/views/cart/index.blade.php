@@ -17,10 +17,10 @@
                              class="w-full md:w-20 h-20 object-cover rounded">
                         
                         <div class="flex-1">
-                            <a href="{{ route('products.show', $item->product->slug) }}" class="font-semibold text-gray-800 hover:text-indigo-600 text-sm">
+                            <a href="{{ route('products.show', $item->product->slug) }}" class="font-semibold text-gray-800 hover:text-orange-600 text-sm">
                                 {{ $item->product->name }}
                             </a>
-                            <p class="text-indigo-600 font-bold mt-1 text-sm">{{ number_format($item->price, 0, ',', ' ') }} FCFA</p>
+                            <p class="text-orange-600 font-bold mt-1 text-sm">{{ number_format($item->price, 0, ',', ' ') }} FCFA</p>
                             
                             <div class="mt-4 flex items-center gap-4">
                                 <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center gap-2">
@@ -59,15 +59,15 @@
                     </div>
                     <div class="border-t pt-1.5 flex justify-between font-bold text-base">
                         <span>Total</span>
-                        <span class="text-indigo-600">{{ number_format($total + 6550, 0, ',', ' ') }} FCFA</span>
+                        <span class="text-orange-600">{{ number_format($total + 6550, 0, ',', ' ') }} FCFA</span>
                     </div>
                 </div>
                 
-                <a href="{{ route('cart.checkout') }}" class="block w-full bg-indigo-600 text-white text-center px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium mb-2">
+                <a href="{{ route('cart.checkout') }}" class="block w-full bg-orange-500 text-white text-center px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium mb-2">
                     Passer la commande
                 </a>
                 
-                <a href="{{ route('products.index') }}" class="block text-center text-sm text-gray-600 hover:text-indigo-600">
+                <a href="{{ route('products.index') }}" class="block text-center text-sm text-gray-600 hover:text-orange-600">
                     Continuer les achats
                 </a>
             </div>
@@ -76,7 +76,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-shopping-cart text-gray-400 text-6xl mb-4"></i>
             <p class="text-gray-600 mb-4">Votre panier est vide.</p>
-            <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+            <a href="{{ route('products.index') }}" class="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600">
                 Découvrir les produits
             </a>
         </div>

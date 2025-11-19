@@ -44,10 +44,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                <button type="submit" class="w-full bg-orange-500 text-white px-3 py-1.5 rounded-lg hover:bg-orange-600 text-sm font-medium">
                     Appliquer
                 </button>
-                <a href="{{ route('products.index') }}" class="block text-center mt-1.5 text-xs text-gray-600 hover:text-indigo-600">
+                <a href="{{ route('products.index') }}" class="block text-center mt-1.5 text-xs text-gray-600 hover:text-orange-600">
                     Réinitialiser
                 </a>
             </form>

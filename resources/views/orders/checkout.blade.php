@@ -17,7 +17,7 @@
                 <div>
                     <label for="shipping_name" class="block text-xs font-medium mb-1">Nom complet *</label>
                     <input type="text" id="shipping_name" name="shipping_name" value="{{ old('shipping_name', Auth::user()->name) }}" required 
-                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 @error('shipping_name') border-red-500 @enderror">
+                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 @error('shipping_name') border-red-500 @enderror">
                     @error('shipping_name')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -26,7 +26,7 @@
                 <div>
                     <label for="shipping_phone" class="block text-xs font-medium mb-1">Téléphone *</label>
                     <input type="text" id="shipping_phone" name="shipping_phone" value="{{ old('shipping_phone', Auth::user()->phone) }}" required 
-                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 @error('shipping_phone') border-red-500 @enderror">
+                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 @error('shipping_phone') border-red-500 @enderror">
                     @error('shipping_phone')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -35,7 +35,7 @@
                 <div>
                     <label for="shipping_address" class="block text-xs font-medium mb-1">Adresse *</label>
                     <textarea id="shipping_address" name="shipping_address" rows="3" required 
-                              class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 @error('shipping_address') border-red-500 @enderror">{{ old('shipping_address', Auth::user()->address) }}</textarea>
+                              class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 @error('shipping_address') border-red-500 @enderror">{{ old('shipping_address', Auth::user()->address) }}</textarea>
                     @error('shipping_address')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -45,26 +45,26 @@
                     <div>
                         <label for="shipping_city" class="block text-xs font-medium mb-1">Ville</label>
                         <input type="text" id="shipping_city" name="shipping_city" value="{{ old('shipping_city') }}" 
-                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
                     </div>
 
                     <div>
                         <label for="shipping_postal_code" class="block text-xs font-medium mb-1">Code postal</label>
                         <input type="text" id="shipping_postal_code" name="shipping_postal_code" value="{{ old('shipping_postal_code') }}" 
-                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
                     </div>
                 </div>
 
                 <div>
                     <label for="shipping_country" class="block text-xs font-medium mb-1">Pays</label>
                     <input type="text" id="shipping_country" name="shipping_country" value="{{ old('shipping_country', 'France') }}" 
-                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                           class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
                 </div>
 
                 <div>
                     <label for="payment_method" class="block text-xs font-medium mb-1">Méthode de paiement *</label>
                     <select id="payment_method" name="payment_method" required 
-                            class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 @error('payment_method') border-red-500 @enderror">
+                            class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 @error('payment_method') border-red-500 @enderror">
                         <option value="">Sélectionner...</option>
                         <option value="Carte bancaire" {{ old('payment_method') == 'Carte bancaire' ? 'selected' : '' }}>Carte bancaire</option>
                         <option value="PayPal" {{ old('payment_method') == 'PayPal' ? 'selected' : '' }}>PayPal</option>
@@ -79,10 +79,10 @@
                 <div>
                     <label for="notes" class="block text-xs font-medium mb-1">Notes (optionnel)</label>
                     <textarea id="notes" name="notes" rows="3" 
-                              class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500">{{ old('notes') }}</textarea>
+                              class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">{{ old('notes') }}</textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium">
                     Confirmer la commande
                 </button>
             </form>
@@ -100,7 +100,7 @@
                         <div class="flex-1">
                             <h3 class="font-semibold text-xs">{{ $item->product->name }}</h3>
                             <p class="text-gray-600 text-xs">x{{ $item->quantity }}</p>
-                            <p class="text-indigo-600 font-bold text-xs">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
+                            <p class="text-orange-600 font-bold text-xs">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
                         </div>
                     </div>
                 @endforeach
@@ -120,7 +120,7 @@
                 </div>
                 <div class="border-t pt-1.5 flex justify-between font-bold text-base">
                     <span>Total</span>
-                    <span class="text-indigo-600">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-orange-600">{{ number_format($total, 0, ',', ' ') }} FCFA</span>
                 </div>
             </div>
         </div>

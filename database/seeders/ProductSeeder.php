@@ -1,125 +1,30 @@
-<?php declare(strict_types=1); 
+<?php declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
-class EcommerceSeeder extends Seeder
+class ProductSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Créer les rôles
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $vendeurRole = Role::firstOrCreate(['name' => 'vendeur']);
-        $clientRole = Role::firstOrCreate(['name' => 'client']);
+        // Récupérer les catégories
+        $smartphones = Category::where('slug', 'smartphones')->first();
+        $laptops = Category::where('slug', 'ordinateurs-portables')->first();
+        $men = Category::where('slug', 'homme')->first();
+        $women = Category::where('slug', 'femme')->first();
+        $home = Category::where('slug', 'maison')->first();
 
-        // Créer ou récupérer des utilisateurs
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@shopme.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-                'phone' => '+33 1 23 45 67 89',
-                'address' => '123 Rue de Paris, 75001 Paris',
-            ]
-        );
-        if (!$admin->hasRole($adminRole)) {
-            $admin->assignRole($adminRole);
+        if (!$smartphones || !$laptops || !$men || !$women || !$home) {
+            $this->command->warn('Certaines catégories n\'existent pas. Veuillez exécuter CategorySeeder d\'abord.');
+            return;
         }
-
-        $client = User::firstOrCreate(
-            ['email' => 'client@shopme.com'],
-            [
-                'name' => 'Jean Dupont',
-                'password' => Hash::make('password'),
-                'phone' => '+33 6 12 34 56 78',
-                'address' => '45 Avenue des Champs, 75008 Paris',
-            ]
-        );
-        if (!$client->hasRole($clientRole)) {
-            $client->assignRole($clientRole);
-        }
-
-        // Créer des catégories parentes
-        $electronics = Category::firstOrCreate(
-            ['slug' => Str::slug('Électronique')],
-            [
-                'name' => 'Électronique',
-                'description' => 'Tous les produits électroniques',
-                'is_active' => true,
-                'sort_order' => 1,
-            ]
-        );
-
-        $clothing = Category::firstOrCreate(
-            ['slug' => Str::slug('Vêtements')],
-            [
-                'name' => 'Vêtements',
-                'description' => 'Mode et vêtements',
-                'is_active' => true,
-                'sort_order' => 2,
-            ]
-        );
-
-        $home = Category::firstOrCreate(
-            ['slug' => Str::slug('Maison')],
-            [
-                'name' => 'Maison',
-                'description' => 'Décoration et ameublement',
-                'is_active' => true,
-                'sort_order' => 3,
-            ]
-        );
-
-        // Créer des sous-catégories
-        $smartphones = Category::firstOrCreate(
-            ['slug' => Str::slug('Smartphones')],
-            [
-                'name' => 'Smartphones',
-                'parent_id' => $electronics->id,
-                'is_active' => true,
-                'sort_order' => 1,
-            ]
-        );
-
-        $laptops = Category::firstOrCreate(
-            ['slug' => Str::slug('Ordinateurs portables')],
-            [
-                'name' => 'Ordinateurs portables',
-                'parent_id' => $electronics->id,
-                'is_active' => true,
-                'sort_order' => 2,
-            ]
-        );
-
-        $men = Category::firstOrCreate(
-            ['slug' => Str::slug('Homme')],
-            [
-                'name' => 'Homme',
-                'parent_id' => $clothing->id,
-                'is_active' => true,
-                'sort_order' => 1,
-            ]
-        );
-
-        $women = Category::firstOrCreate(
-            ['slug' => Str::slug('Femme')],
-            [
-                'name' => 'Femme',
-                'parent_id' => $clothing->id,
-                'is_active' => true,
-                'sort_order' => 2,
-            ]
-        );
 
         // Créer des produits (prix en FCFA)
         $products = [
@@ -208,5 +113,7 @@ class EcommerceSeeder extends Seeder
                 ])
             );
         }
+
+        $this->command->info(count($products) . ' produits créés avec succès.');
     }
 }

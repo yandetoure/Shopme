@@ -13,7 +13,7 @@
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium mb-2">Email</label>
                 <input type="email" id="email" name="email" value="{{ old('email') }}" required 
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('email') border-red-500 @enderror">
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent @error('email') border-red-500 @enderror">
                 @error('email')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -22,7 +22,7 @@
             <div class="mb-4">
                 <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
                 <input type="password" id="password" name="password" required 
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('password') border-red-500 @enderror">
+                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent @error('password') border-red-500 @enderror">
                 @error('password')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -35,13 +35,13 @@
                 </label>
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold mb-4">
+            <button type="submit" class="w-full bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 font-semibold mb-4">
                 Se connecter
             </button>
 
             <p class="text-center text-gray-600">
                 Pas encore de compte ? 
-                <a href="{{ route('register') }}" class="text-indigo-600 hover:underline">S'inscrire</a>
+                <a href="{{ route('register') }}" class="text-orange-600 hover:underline">S'inscrire</a>
             </p>
         </form>
     </div>

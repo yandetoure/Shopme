@@ -37,7 +37,7 @@
                             <div class="flex-1">
                                 <h3 class="font-semibold text-sm">{{ $item->product_name }}</h3>
                                 <p class="text-gray-600 text-xs">Quantité: {{ $item->quantity }}</p>
-                                <p class="text-indigo-600 font-bold text-sm">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
+                                <p class="text-orange-600 font-bold text-sm">{{ number_format($item->total, 0, ',', ' ') }} FCFA</p>
                             </div>
                         </div>
                     @endforeach
@@ -77,7 +77,7 @@
                 </div>
                 <div class="border-t pt-1.5 flex justify-between font-bold text-base">
                     <span>Total</span>
-                    <span class="text-indigo-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-orange-600">{{ number_format($order->total, 0, ',', ' ') }} FCFA</span>
                 </div>
             </div>
             

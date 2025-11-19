@@ -18,15 +18,15 @@
     </div>
     <div class="p-3">
         <a href="{{ route('products.show', $product->slug) }}">
-            <h3 class="font-semibold text-gray-800 group-hover:text-indigo-600 mb-1.5 line-clamp-2 text-sm">{{ $product->name }}</h3>
+            <h3 class="font-semibold text-gray-800 group-hover:text-orange-600 mb-1.5 line-clamp-2 text-sm">{{ $product->name }}</h3>
         </a>
         <div class="flex items-center justify-between mb-2">
             <div>
                 @if($product->is_on_sale)
-                    <span class="text-indigo-600 font-bold text-base">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-orange-600 font-bold text-base">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
                     <span class="text-gray-400 line-through text-xs ml-1">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @else
-                    <span class="text-indigo-600 font-bold text-base">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-orange-600 font-bold text-base">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @endif
             </div>
             @if(!$product->in_stock)
@@ -53,7 +53,7 @@
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1" onsubmit="event.stopPropagation(); return true;">
                         @csrf
                         <input type="hidden" name="quantity" value="1">
-                        <button type="submit" onclick="event.stopPropagation();" class="w-full bg-indigo-600 text-white px-2 py-1.5 rounded-lg hover:bg-indigo-700 transition text-sm font-medium flex items-center justify-center gap-1">
+                        <button type="submit" onclick="event.stopPropagation();" class="w-full bg-orange-500 text-white px-2 py-1.5 rounded-lg hover:bg-orange-600 transition text-sm font-medium flex items-center justify-center gap-1">
                             <i class="fas fa-shopping-cart text-xs"></i>
                             <span class="hidden sm:inline text-xs">Ajouter</span>
                         </button>
@@ -65,7 +65,7 @@
                 @endif
             @else
                 <!-- Bouton pour non connectés -->
-                <a href="{{ route('login') }}" onclick="event.stopPropagation();" class="flex-1 block bg-indigo-600 text-white px-2 py-1.5 rounded-lg hover:bg-indigo-700 transition text-sm font-medium text-center">
+                <a href="{{ route('login') }}" onclick="event.stopPropagation();" class="flex-1 block bg-orange-500 text-white px-2 py-1.5 rounded-lg hover:bg-orange-600 transition text-sm font-medium text-center">
                     <i class="fas fa-shopping-cart text-xs mr-1"></i><span class="text-xs">Ajouter</span>
                 </a>
             @endauth

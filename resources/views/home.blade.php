@@ -4,12 +4,12 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20">
+<section class="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-20">
     <div class="container mx-auto px-4">
         <div class="text-center">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">Bienvenue sur ShopMe</h1>
             <p class="text-lg md:text-xl mb-6">Découvrez notre sélection de produits de qualité</p>
-            <a href="{{ route('products.index') }}" class="bg-white text-indigo-600 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+            <a href="{{ route('products.index') }}" class="bg-white text-orange-600 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
                 Découvrir les produits
             </a>
         </div>
@@ -24,10 +24,10 @@
         @foreach($categories as $category)
             <a href="{{ route('category.show', $category->slug) }}" class="group">
                 <div class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-xl transition">
-                    <div class="w-16 h-16 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:bg-indigo-600 transition">
-                        <i class="fas fa-tag text-indigo-600 group-hover:text-white text-2xl"></i>
+                    <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:bg-orange-500 transition">
+                        <i class="fas fa-tag text-orange-600 group-hover:text-white text-2xl"></i>
                     </div>
-                    <h3 class="font-semibold text-gray-800 group-hover:text-indigo-600 text-sm">{{ $category->name }}</h3>
+                    <h3 class="font-semibold text-gray-800 group-hover:text-orange-600 text-sm">{{ $category->name }}</h3>
                     @if($category->children->count() > 0)
                         <p class="text-xs text-gray-500 mt-1">{{ $category->children->count() }} sous-catégories</p>
                     @endif

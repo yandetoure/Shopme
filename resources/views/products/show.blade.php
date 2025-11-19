@@ -17,7 +17,7 @@
             <h1 class="text-2xl font-bold mb-3">{{ $product->name }}</h1>
             
             @if($product->category)
-                <a href="{{ route('category.show', $product->category->slug) }}" class="text-indigo-600 hover:underline mb-3 block text-sm">
+                <a href="{{ route('category.show', $product->category->slug) }}" class="text-orange-600 hover:underline mb-3 block text-sm">
                     {{ $product->category->name }}
                 </a>
             @endif
@@ -26,14 +26,14 @@
             <div class="mb-4">
                 @if($product->is_on_sale)
                     <div class="flex items-center gap-3">
-                        <span class="text-2xl font-bold text-indigo-600">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
+                        <span class="text-2xl font-bold text-orange-600">{{ number_format($product->sale_price, 0, ',', ' ') }} FCFA</span>
                         <span class="text-lg text-gray-400 line-through">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                         <span class="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
                             -{{ $product->discount_percentage }}%
                         </span>
                     </div>
                 @else
-                    <span class="text-2xl font-bold text-indigo-600">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
+                    <span class="text-2xl font-bold text-orange-600">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
                 @endif
             </div>
 
@@ -70,7 +70,7 @@
                                 <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" 
                                        class="w-16 px-2 py-1.5 border rounded-lg text-sm">
                             </div>
-                            <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium flex items-center justify-center gap-2">
                                 <i class="fas fa-shopping-cart text-sm"></i>
                                 <span class="text-sm">Ajouter au panier</span>
                             </button>
@@ -79,7 +79,7 @@
                 </div>
             @else
                 <div class="mb-4">
-                    <a href="{{ route('login') }}" class="block w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium text-center">
+                    <a href="{{ route('login') }}" class="block w-full bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium text-center">
                         <i class="fas fa-shopping-cart mr-2 text-sm"></i>Connectez-vous pour acheter
                     </a>
                 </div>

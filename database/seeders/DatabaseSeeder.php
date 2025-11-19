@@ -16,7 +16,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            EcommerceSeeder::class,
+            RolePermissionSeeder::class,  // Doit être exécuté en premier
+            CategorySeeder::class,         // Les catégories doivent exister avant les produits
+            UserSeeder::class,             // Les utilisateurs peuvent être créés après les rôles
+            ProductSeeder::class,          // Les produits nécessitent les catégories
         ]);
     }
 }

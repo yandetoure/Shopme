@@ -21,7 +21,7 @@
         <div class="bg-white rounded-lg shadow-md p-12 text-center">
             <i class="fas fa-heart text-gray-400 text-6xl mb-4"></i>
             <p class="text-gray-600 mb-4">Vous n'avez pas encore de favoris.</p>
-            <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
+            <a href="{{ route('products.index') }}" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium">
                 Découvrir les produits
             </a>
         </div>

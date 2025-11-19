@@ -22,7 +22,7 @@ class CheckRole
 
         $user = auth()->user();
         
-        if (in_array($user->role, $roles)) {
+        if ($user->hasAnyRole($roles)) {
             return $next($request);
         }
 
