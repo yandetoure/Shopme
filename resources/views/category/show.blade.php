@@ -34,7 +34,9 @@
                         </div>
                         <h3 class="font-medium text-gray-800 group-hover:text-orange-600 text-xs leading-tight">{{ $child->name }}</h3>
                         @php
-                            $childProductCount = \App\Models\Product::where('category_id', $child->id)->active()->count();
+                            $childProductCount = \App\Models\Product::whereHas('categories', function($q) use ($child) {
+                                $q->where('categories.id', $child->id);
+                            })->active()->count();
                         @endphp
                         @if($childProductCount > 0)
                             <p class="text-xs text-gray-500 mt-1">{{ $childProductCount }} produit(s)</p>

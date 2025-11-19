@@ -13,12 +13,36 @@ class CategoryController extends Controller
     {
         $category = Category::where('slug', $slug)
             ->where('is_active', true)
-            ->with(['parent', 'children'])
+            ->with(['parent', 'children', 'children.children'])
             ->firstOrFail();
 
-        $products = Product::where('category_id', $category->id)
-            ->active()
-            ->paginate(12);
+        // Récupérer tous les IDs de catégories (catégorie principale + sous-catégories)
+        $categoryIds = $category->getAllChildrenIds();
+
+        // Récupérer les produits associés à cette catégorie ou à ses sous-catégories
+        $query = Product::whereHas('categories', function ($query) use ($categoryIds) {
+            $query->whereIn('categories.id', $categoryIds);
+        })->active();
+
+        // Appliquer le tri
+        $sort = request('sort', 'newest');
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('sale_price', 'asc')->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('sale_price', 'desc')->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                $query->orderBy('sales_count', 'desc')->orderBy('views', 'desc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $products = $query->paginate(12);
 
         // Récupérer les IDs des favoris si l'utilisateur est connecté
         $favoriteIds = [];
@@ -44,8 +68,10 @@ class CategoryController extends Controller
             ->with(['parent', 'children'])
             ->firstOrFail();
 
-        // Récupérer les produits avec tri optionnel
-        $query = Product::where('category_id', $category->id)->active();
+        // Récupérer les produits associés à cette sous-catégorie via la relation many-to-many
+        $query = Product::whereHas('categories', function ($query) use ($category) {
+            $query->where('categories.id', $category->id);
+        })->active();
         
         // Appliquer le tri
         $sort = request('sort', 'newest');

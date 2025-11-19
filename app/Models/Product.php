@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
@@ -14,7 +15,7 @@ class Product extends Model
         'description',
         'short_description',
         'sku',
-        'category_id',
+        'category_id', // Catégorie principale (pour compatibilité)
         'price',
         'sale_price',
         'is_on_sale',
@@ -42,11 +43,20 @@ class Product extends Model
     ];
 
     /**
-     * Relation avec la catégorie
+     * Relation avec la catégorie principale (pour compatibilité)
      */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relation many-to-many avec les catégories
+     */
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'category_product')
+            ->withTimestamps();
     }
 
     /**

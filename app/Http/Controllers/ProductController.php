@@ -11,12 +11,14 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::active()->with('category');
+        $query = Product::active()->with(['category', 'categories']);
 
         // Filtres
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
+            if ($request->filled('category')) {
+                $query->whereHas('categories', function ($q) use ($request) {
+                    $q->where('categories.id', $request->category);
+                });
+            }
 
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
@@ -62,14 +64,17 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $slug)
             ->active()
-            ->with('category')
+            ->with(['category', 'categories'])
             ->firstOrFail();
 
         // Incrémenter les vues
         $product->increment('views');
 
-        // Produits similaires
-        $relatedProducts = Product::where('category_id', $product->category_id)
+        // Produits similaires (mêmes catégories)
+        $categoryIds = $product->categories->pluck('id')->toArray();
+        $relatedProducts = Product::whereHas('categories', function ($query) use ($categoryIds) {
+                $query->whereIn('categories.id', $categoryIds);
+            })
             ->where('id', '!=', $product->id)
             ->active()
             ->limit(4)

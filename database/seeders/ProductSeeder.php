@@ -106,12 +106,39 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            Product::firstOrCreate(
+            // Extraire category_id du tableau
+            $categoryId = $productData['category_id'];
+            unset($productData['category_id']);
+            
+            // Créer ou récupérer le produit
+            $product = Product::firstOrCreate(
                 ['slug' => $productData['slug']],
                 array_merge($productData, [
                     'sku' => 'SKU-' . Str::random(8),
+                    'category_id' => $categoryId, // Catégorie principale pour compatibilité
                 ])
             );
+            
+            // Associer le produit à la catégorie via la relation many-to-many
+            $category = Category::with('parent')->find($categoryId);
+            if ($category) {
+                // Recharger les relations du produit
+                $product->refresh();
+                $product->load('categories');
+                
+                // Associer à la catégorie principale si pas déjà associé
+                if (!$product->categories->contains($categoryId)) {
+                    $product->categories()->attach($categoryId);
+                }
+                
+                // Si la catégorie a un parent, associer aussi le produit à la catégorie parente
+                if ($category->parent_id) {
+                    $product->load('categories');
+                    if (!$product->categories->contains($category->parent_id)) {
+                        $product->categories()->attach($category->parent_id);
+                    }
+                }
+            }
         }
 
         $this->command->info(count($products) . ' produits créés avec succès.');
