@@ -32,6 +32,14 @@
 
                 <div class="flex items-center space-x-6">
                     @auth
+                        <a href="{{ route('favorites.index') }}" class="relative text-gray-700 hover:text-indigo-600">
+                            <i class="fas fa-heart text-xl"></i>
+                            @if(auth()->user()->favorites()->count() > 0)
+                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {{ auth()->user()->favorites()->count() }}
+                                </span>
+                            @endif
+                        </a>
                         <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-indigo-600">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
@@ -72,7 +80,15 @@
                 <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">ShopMe</a>
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ route('cart.index') }}" class="relative text-gray-700">
+                        <a href="{{ route('favorites.index') }}" class="relative text-gray-700 mr-2">
+                            <i class="fas fa-heart text-xl"></i>
+                            @if(auth()->user()->favorites()->count() > 0)
+                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    {{ auth()->user()->favorites()->count() }}
+                                </span>
+                            @endif
+                        </a>
+                        <a href="{{ route('cart.index') }}" class="relative text-gray-700 mr-2">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
                                 <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -95,6 +111,7 @@
                 <div class="space-y-2">
                     @auth
                         <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mon Profil</a>
+                        <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mes Favoris</a>
                         <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mes Commandes</a>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

@@ -44,7 +44,7 @@
     <h2 class="text-3xl font-bold mb-8">Produits en vedette</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         @foreach($featuredProducts as $product)
-            @include('partials.product-card', ['product' => $product])
+            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
         @endforeach
     </div>
 </section>
@@ -56,7 +56,7 @@
     <h2 class="text-3xl font-bold mb-8">Promotions</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         @foreach($onSaleProducts as $product)
-            @include('partials.product-card', ['product' => $product])
+            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
         @endforeach
     </div>
 </section>
@@ -68,7 +68,7 @@
     <h2 class="text-3xl font-bold mb-8">Nouveautés</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         @foreach($latestProducts as $product)
-            @include('partials.product-card', ['product' => $product])
+            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
         @endforeach
     </div>
 </section>

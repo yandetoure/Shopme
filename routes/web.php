@@ -39,11 +39,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
+    // Favoris
+    Route::get('/favorites', [App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/add/{product}', [App\Http\Controllers\FavoriteController::class, 'add'])->name('favorites.add');
+    Route::delete('/favorites/remove/{product}', [App\Http\Controllers\FavoriteController::class, 'remove'])->name('favorites.remove');
+    Route::post('/favorites/toggle/{product}', [App\Http\Controllers\FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
     // Profil utilisateur (avec tabs pour mobile)
     Route::get('/profile', function () {
         $user = Auth::user();
         $orders = $user->orders()->latest()->take(5)->get();
         $cartCount = $user->cartItems()->count();
-        return view('profile.index', compact('user', 'orders', 'cartCount'));
+        $favoritesCount = $user->favorites()->count();
+        return view('profile.index', compact('user', 'orders', 'cartCount', 'favoritesCount'));
     })->name('profile.index');
 });

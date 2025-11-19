@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -19,7 +20,13 @@ class CategoryController extends Controller
             ->active()
             ->paginate(12);
 
-        return view('category.show', compact('category', 'products'));
+        // Récupérer les IDs des favoris si l'utilisateur est connecté
+        $favoriteIds = [];
+        if (Auth::check()) {
+            $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
+        }
+
+        return view('category.show', compact('category', 'products', 'favoriteIds'));
     }
 
     public function subcategory($parentSlug, $slug)
@@ -36,6 +43,12 @@ class CategoryController extends Controller
             ->active()
             ->paginate(12);
 
-        return view('category.show', compact('category', 'products'));
+        // Récupérer les IDs des favoris si l'utilisateur est connecté
+        $favoriteIds = [];
+        if (Auth::check()) {
+            $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
+        }
+
+        return view('category.show', compact('category', 'products', 'favoriteIds'));
     }
 }

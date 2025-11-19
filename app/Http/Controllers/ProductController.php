@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1); 
 
 namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -48,7 +49,13 @@ class ProductController extends Controller
         $products = $query->paginate(12);
         $categories = Category::whereNull('parent_id')->where('is_active', true)->get();
 
-        return view('products.index', compact('products', 'categories'));
+        // Récupérer les IDs des favoris si l'utilisateur est connecté
+        $favoriteIds = [];
+        if (Auth::check()) {
+            $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
+        }
+
+        return view('products.index', compact('products', 'categories', 'favoriteIds'));
     }
 
     public function show($slug)
@@ -68,6 +75,12 @@ class ProductController extends Controller
             ->limit(4)
             ->get();
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        // Vérifier si le produit est en favoris
+        $isFavorite = false;
+        if (Auth::check()) {
+            $isFavorite = Auth::user()->favorites()->where('product_id', $product->id)->exists();
+        }
+
+        return view('products.show', compact('product', 'relatedProducts', 'isFavorite'));
     }
 }

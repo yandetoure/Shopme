@@ -42,7 +42,7 @@
         @if($products->count() > 0)
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 @foreach($products as $product)
-                    @include('partials.product-card', ['product' => $product])
+                    @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
                 @endforeach
             </div>
 

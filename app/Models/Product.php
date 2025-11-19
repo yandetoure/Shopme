@@ -66,6 +66,14 @@ class Product extends Model
     }
 
     /**
+     * Relation avec les favoris
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    /**
      * Obtenir le prix à afficher (prix de vente ou prix normal)
      */
     public function getDisplayPriceAttribute()

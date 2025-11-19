@@ -19,6 +19,11 @@
                     class="flex-1 px-4 py-2 rounded font-semibold transition">
                 <i class="fas fa-box mr-2"></i>Commandes
             </button>
+            <button @click="activeTab = 'favorites'" 
+                    :class="activeTab === 'favorites' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
+                    class="flex-1 px-4 py-2 rounded font-semibold transition">
+                <i class="fas fa-heart mr-2"></i>Favoris
+            </button>
             <button @click="activeTab = 'cart'" 
                     :class="activeTab === 'cart' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'"
                     class="flex-1 px-4 py-2 rounded font-semibold transition">
@@ -33,6 +38,12 @@
             <div class="bg-white rounded-lg shadow-md p-4 sticky top-20">
                 <a href="{{ route('profile.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-indigo-50 text-indigo-600 font-semibold">
                     <i class="fas fa-user mr-2"></i>Mon Profil
+                </a>
+                <a href="{{ route('favorites.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-gray-100 text-gray-700">
+                    <i class="fas fa-heart mr-2"></i>Mes Favoris
+                    @if(isset($favoritesCount) && $favoritesCount > 0)
+                        <span class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">{{ $favoritesCount }}</span>
+                    @endif
                 </a>
                 <a href="{{ route('orders.index') }}" class="block px-4 py-2 mb-2 rounded hover:bg-gray-100 text-gray-700">
                     <i class="fas fa-box mr-2"></i>Mes Commandes
@@ -75,6 +86,24 @@
                             <input type="text" value="{{ ucfirst($user->role) }}" disabled class="w-full px-4 py-2 border rounded-lg bg-gray-50">
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Onglet Favoris -->
+            <div x-show="activeTab === 'favorites'" x-cloak class="md:block">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold mb-6">Mes Favoris</h2>
+                    @if(isset($favoritesCount) && $favoritesCount > 0)
+                        <p class="text-gray-600 mb-4">Vous avez {{ $favoritesCount }} produit(s) dans vos favoris.</p>
+                        <a href="{{ route('favorites.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                            Voir mes favoris
+                        </a>
+                    @else
+                        <p class="text-gray-600 mb-4">Vous n'avez pas encore de favoris.</p>
+                        <a href="{{ route('products.index') }}" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700">
+                            Découvrir les produits
+                        </a>
+                    @endif
                 </div>
             </div>
 
