@@ -24,7 +24,11 @@ class CategorySeeder extends Seeder
                 'Armoires et rangements',
                 'Meubles de chambre',
                 'Décoration chambre',
-                'Éclairage chambre'
+                'Éclairage chambre',
+                'Lampes de chevet',
+                'Parfums de chambre',
+                'Diffuseurs',
+                'Encensoirs'
             ],
             
             // Cuisine
@@ -35,6 +39,7 @@ class CategorySeeder extends Seeder
                 'Sèche-linge',
                 'Micro-ondes',
                 'Machine à café',
+                'Chafing dish',
                 'Décoration cuisine',
                 'Rangement cuisine',
                 'Vaisselle et couverts'
@@ -55,6 +60,8 @@ class CategorySeeder extends Seeder
             'Jardin' => [
                 'Outils de jardinage',
                 'Plantes et fleurs',
+                'Fleurs',
+                'Pots de fleurs',
                 'Mobilier jardin',
                 'Décoration jardin',
                 'Éclairage extérieur',
@@ -65,9 +72,11 @@ class CategorySeeder extends Seeder
             'Maison' => [
                 'Meubles',
                 'Décoration',
+                'Décorations murales',
                 'Luminaire',
                 'Textile maison',
-                'Rangement maison'
+                'Rangement maison',
+                'Bougies de cire'
             ],
             
             // Lingeries et astuces

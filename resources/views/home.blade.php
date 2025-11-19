@@ -38,38 +38,102 @@
 </section>
 @endif
 
-<!-- Produits en vedette -->
-@if(isset($featuredProducts) && $featuredProducts->count() > 0)
-<section class="py-12 bg-white container mx-auto px-4">
-    <h2 class="text-2xl font-bold mb-6">Produits en vedette</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @foreach($featuredProducts as $product)
-            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
-        @endforeach
+<!-- Produits en promotion - Meilleures offres -->
+@if(isset($onSaleProducts) && $onSaleProducts->count() > 0)
+<section class="py-6 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-orange-500 text-white px-4 py-2 rounded">
+                    <h2 class="text-base font-bold">Meilleures offres</h2>
+                </div>
+            </div>
+            <a href="{{ route('products.index', ['filter' => 'on_sale']) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                Voir plus >
+            </a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            @foreach($onSaleProducts->take(5) as $product)
+                @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
+            @endforeach
+        </div>
     </div>
 </section>
 @endif
 
-<!-- Produits en promotion -->
-@if(isset($onSaleProducts) && $onSaleProducts->count() > 0)
-<section class="py-12 container mx-auto px-4">
-    <h2 class="text-2xl font-bold mb-6">Promotions</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @foreach($onSaleProducts as $product)
-            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
-        @endforeach
+<!-- Produits par catégories -->
+@if(isset($categoryProducts) && count($categoryProducts) > 0)
+    @foreach($categoryProducts as $slug => $data)
+        @php
+            $category = $data['category'];
+            $products = $data['products'];
+        @endphp
+        @if($products->count() > 0)
+        <section class="py-6 {{ $loop->even ? 'bg-white' : 'bg-blue-50' }}">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-600 text-white px-4 py-2 rounded">
+                            <h2 class="text-base font-bold">{{ strtoupper($category->name) }} | Meilleures offres</h2>
+                        </div>
+                    </div>
+                    <a href="{{ route('category.show', $category->slug) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                        Voir plus >
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    @foreach($products->take(6) as $product)
+                        @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+    @endforeach
+@endif
+
+<!-- Produits en vedette -->
+@if(isset($featuredProducts) && $featuredProducts->count() > 0)
+<section class="py-6 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-orange-500 text-white px-4 py-2 rounded">
+                    <h2 class="text-base font-bold">Produits en vedette</h2>
+                </div>
+            </div>
+            <a href="{{ route('products.index', ['sort' => 'popular']) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                Voir plus >
+            </a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            @foreach($featuredProducts->take(5) as $product)
+                @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
+            @endforeach
+        </div>
     </div>
 </section>
 @endif
 
 <!-- Nouveaux produits -->
 @if(isset($latestProducts) && $latestProducts->count() > 0)
-<section class="py-12 bg-white container mx-auto px-4">
-    <h2 class="text-2xl font-bold mb-6">Nouveautés</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @foreach($latestProducts as $product)
-            @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
-        @endforeach
+<section class="py-6 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white border-2 border-orange-500 text-orange-600 px-4 py-2 rounded">
+                    <h2 class="text-base font-bold">Nouveautés</h2>
+                </div>
+            </div>
+            <a href="{{ route('products.index', ['sort' => 'newest']) }}" class="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                Voir plus >
+            </a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            @foreach($latestProducts->take(5) as $product)
+                @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
+            @endforeach
+        </div>
     </div>
 </section>
 @endif

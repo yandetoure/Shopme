@@ -33,12 +33,39 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
+        // Produits par catégories populaires (pour les sections)
+        $categoryProducts = [];
+        $popularCategories = Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->limit(4)
+            ->get();
+
+        foreach ($popularCategories as $category) {
+            $products = Product::whereHas('categories', function ($query) use ($category) {
+                $categoryIds = [$category->id];
+                $categoryIds = array_merge($categoryIds, $category->children->pluck('id')->toArray());
+                $query->whereIn('categories.id', $categoryIds);
+            })
+            ->active()
+            ->onSale()
+            ->limit(6)
+            ->get();
+
+            if ($products->count() > 0) {
+                $categoryProducts[$category->slug] = [
+                    'category' => $category,
+                    'products' => $products
+                ];
+            }
+        }
+
         // Récupérer les IDs des favoris si l'utilisateur est connecté
         $favoriteIds = [];
         if (Auth::check()) {
             $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
         }
 
-        return view('home', compact('categories', 'featuredProducts', 'onSaleProducts', 'latestProducts', 'favoriteIds'));
+        return view('home', compact('categories', 'featuredProducts', 'onSaleProducts', 'latestProducts', 'categoryProducts', 'favoriteIds'));
     }
 }
