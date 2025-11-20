@@ -70,15 +70,15 @@
 
                 <!-- Prix -->
                 <div>
-                    <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Prix (€) *</label>
-                    <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0" required
+                    <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Prix (FCFA) *</label>
+                    <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" step="1" min="0" required
                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                 </div>
 
                 <!-- Prix de vente -->
                 <div>
-                    <label for="sale_price" class="block text-sm font-medium text-gray-700 mb-2">Prix de vente (€)</label>
-                    <input type="number" id="sale_price" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" step="0.01" min="0"
+                    <label for="sale_price" class="block text-sm font-medium text-gray-700 mb-2">Prix de vente (FCFA)</label>
+                    <input type="number" id="sale_price" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" step="1" min="0"
                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                 </div>
 

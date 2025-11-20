@@ -65,7 +65,42 @@
                         </a>
                         @endif
 
+                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('admin'))
+                        <div class="pt-3">
+                            <p class="px-3 text-xs text-gray-400 uppercase tracking-wider">Commandes</p>
+                        </div>
+                        <a href="{{ route('admin.orders.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.orders.*') ? 'bg-gray-700' : '' }}">
+                            <i class="fas fa-shopping-cart w-4"></i>
+                            <span class="ml-2">Toutes les commandes</span>
+                        </a>
+                        @endif
+
+                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('admin'))
+                        <div class="pt-3">
+                            <p class="px-3 text-xs text-gray-400 uppercase tracking-wider">Configuration</p>
+                        </div>
+                        <a href="{{ route('admin.variables.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.variables.*') ? 'bg-gray-700' : '' }}">
+                            <i class="fas fa-palette w-4"></i>
+                            <span class="ml-2">Variables</span>
+                        </a>
+                        <a href="{{ route('admin.shipping-rates.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.shipping-rates.*') ? 'bg-gray-700' : '' }}">
+                            <i class="fas fa-truck w-4"></i>
+                            <span class="ml-2">Livraisons</span>
+                        </a>
+                        <a href="{{ route('admin.coupons.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.coupons.*') ? 'bg-gray-700' : '' }}">
+                            <i class="fas fa-ticket-alt w-4"></i>
+                            <span class="ml-2">Coupons</span>
+                        </a>
+                        <a href="{{ route('admin.settings.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.settings.*') ? 'bg-gray-700' : '' }}">
+                            <i class="fas fa-cog w-4"></i>
+                            <span class="ml-2">Paramètres</span>
+                        </a>
+                        @endif
+
                         @if(Auth::user()->hasRole('super_admin'))
+                        <div class="pt-3">
+                            <p class="px-3 text-xs text-gray-400 uppercase tracking-wider">Administration</p>
+                        </div>
                         <a href="#" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700">
                             <i class="fas fa-users w-4"></i>
                             <span class="ml-2">Utilisateurs</span>
@@ -76,19 +111,15 @@
                         </a>
                         @endif
 
+                        @if(!Auth::user()->hasRole('admin') && !Auth::user()->hasRole('super_admin'))
                         <div class="pt-3">
-                            <p class="px-3 text-xs text-gray-400 uppercase tracking-wider">Commandes</p>
+                            <p class="px-3 text-xs text-gray-400 uppercase tracking-wider">Mes Commandes</p>
                         </div>
-                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('admin'))
-                            <a href="{{ route('admin.orders.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('admin.orders.*') ? 'bg-gray-700' : '' }}">
-                                <i class="fas fa-shopping-bag w-4"></i>
-                                <span class="ml-2">Gestion des commandes</span>
-                            </a>
-                        @endif
                         <a href="{{ route('orders.index') }}" class="flex items-center px-3 py-2 text-sm rounded-lg hover:bg-gray-700 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-gray-700' : '' }}">
                             <i class="fas fa-shopping-bag w-4"></i>
                             <span class="ml-2">Mes commandes</span>
                         </a>
+                        @endif
                     </div>
                 </nav>
 

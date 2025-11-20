@@ -9,6 +9,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminShippingRateController;
+use App\Http\Controllers\Admin\AdminCouponController;
+use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\Admin\AdminVariableController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -89,5 +93,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.updatePaymentStatus');
+        
+        // Tarifs de livraison
+        Route::resource('shipping-rates', AdminShippingRateController::class);
+        
+        // Coupons
+        Route::resource('coupons', AdminCouponController::class);
+        
+        // Variables (attributs globaux)
+        Route::resource('variables', AdminVariableController::class);
+        Route::post('variables/{variable}/values', [AdminVariableController::class, 'storeValue'])->name('variables.values.store');
+        Route::put('variables/{variable}/values/{value}', [AdminVariableController::class, 'updateValue'])->name('variables.values.update');
+        Route::delete('variables/{variable}/values/{value}', [AdminVariableController::class, 'destroyValue'])->name('variables.values.destroy');
+        
+        // Paramètres
+        Route::get('settings', [AdminSettingController::class, 'index'])->name('settings.index');
+        Route::put('settings', [AdminSettingController::class, 'update'])->name('settings.update');
     });
 });
