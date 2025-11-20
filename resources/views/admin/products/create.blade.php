@@ -134,6 +134,19 @@
                 </div>
             </div>
 
+            <!-- Section Attributs/Variables -->
+            <div class="md:col-span-2 mt-6 border-t pt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-semibold text-gray-800">Attributs/Variables</h3>
+                    <button type="button" onclick="addAttribute()" class="bg-blue-500 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-600">
+                        <i class="fas fa-plus mr-1"></i> Ajouter un attribut
+                    </button>
+                </div>
+                <div id="attributes-container" class="space-y-4">
+                    <!-- Les attributs seront ajoutés ici dynamiquement -->
+                </div>
+            </div>
+
             <!-- Boutons -->
             <div class="mt-8 flex justify-end space-x-4">
                 <a href="{{ route('admin.products.index') }}" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
@@ -146,5 +159,104 @@
         </form>
     </div>
 </div>
+
+<script>
+    const attributeTypes = @json($attributeTypesJson ?? []);
+
+    let attributeIndex = 0;
+
+    function addAttribute(attributeTypeId = null, selectedValues = []) {
+        const container = document.getElementById('attributes-container');
+        const index = attributeIndex++;
+        
+        const attributeDiv = document.createElement('div');
+        attributeDiv.className = 'p-4 border rounded-lg bg-gray-50';
+        attributeDiv.dataset.index = index;
+
+        let attributeTypeSelect = '<select name="attributes[' + index + '][attribute_type_id]" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500" onchange="updateAttributeValues(' + index + ', this.value)" required>';
+        attributeTypeSelect += '<option value="">Sélectionner un type d\'attribut</option>';
+        
+        attributeTypes.forEach(type => {
+            const selected = attributeTypeId && type.id == attributeTypeId ? 'selected' : '';
+            attributeTypeSelect += '<option value="' + type.id + '" ' + selected + '>' + type.name + '</option>';
+        });
+        attributeTypeSelect += '</select>';
+
+        let valuesHtml = '<div id="attribute-values-' + index + '" class="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2"></div>';
+        
+        // Initialiser les valeurs si un type est déjà sélectionné
+        if (attributeTypeId) {
+            setTimeout(() => {
+                updateAttributeValues(index, attributeTypeId);
+                if (selectedValues && selectedValues.length > 0) {
+                    setTimeout(() => {
+                        selectedValues.forEach(valueId => {
+                            const checkbox = document.querySelector(`input[name="attributes[${index}][values][]"][value="${valueId}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                    }, 100);
+                }
+            }, 100);
+        }
+
+        attributeDiv.innerHTML = `
+            <div class="flex justify-between items-start mb-3">
+                <div class="flex-1 mr-3">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Type d'attribut</label>
+                    ${attributeTypeSelect}
+                </div>
+                <button type="button" onclick="removeAttribute(${index})" class="mt-6 text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            </div>
+            ${valuesHtml}
+        `;
+
+        container.appendChild(attributeDiv);
+    }
+
+    function updateAttributeValues(index, attributeTypeId) {
+        const valuesContainer = document.getElementById('attribute-values-' + index);
+        valuesContainer.innerHTML = '';
+
+        const attributeType = attributeTypes.find(t => t.id == attributeTypeId);
+        if (!attributeType || !attributeType.values || attributeType.values.length === 0) {
+            valuesContainer.innerHTML = '<p class="text-xs text-gray-500 col-span-full">Aucune valeur disponible pour ce type d\'attribut. <a href="/admin/variables" target="_blank" class="text-blue-600 hover:underline">Ajouter des valeurs</a></p>';
+            return;
+        }
+
+        valuesContainer.innerHTML = '<label class="block text-xs font-medium text-gray-700 mb-2 col-span-full">Sélectionner les valeurs</label>';
+
+        attributeType.values.forEach(value => {
+            const valueDiv = document.createElement('div');
+            valueDiv.className = 'flex items-center space-x-2 p-2 border rounded hover:bg-gray-100';
+
+            let visualElement = '';
+            if (attributeType.type === 'color' && value.color_code) {
+                visualElement = `<div class="w-6 h-6 rounded-full border border-gray-300 flex-shrink-0" style="background-color: ${value.color_code}"></div>`;
+            } else if (attributeType.type === 'image' && value.image) {
+                visualElement = `<img src="${value.image}" alt="${value.value}" class="w-6 h-6 object-cover rounded flex-shrink-0">`;
+            }
+
+            valueDiv.innerHTML = `
+                <label class="flex items-center space-x-2 cursor-pointer flex-1">
+                    <input type="checkbox" name="attributes[${index}][values][]" value="${value.id}" class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
+                    ${visualElement}
+                    <span class="text-xs text-gray-700">${value.value}</span>
+                </label>
+            `;
+
+            valuesContainer.appendChild(valueDiv);
+        });
+    }
+
+    function removeAttribute(index) {
+        const container = document.getElementById('attributes-container');
+        const attributeDiv = container.querySelector(`[data-index="${index}"]`);
+        if (attributeDiv) {
+            attributeDiv.remove();
+        }
+    }
+</script>
 @endsection
 

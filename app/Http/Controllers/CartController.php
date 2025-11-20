@@ -12,7 +12,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = Auth::user()->cartItems()->with(['product', 'variation'])->get();
+        $cartItems = Auth::user()->cartItems()->with(['product.productAttributes.values', 'variation'])->get();
         $total = $cartItems->sum(function($item) {
             return $item->total;
         });

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\AttributeType;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -49,7 +52,30 @@ class AdminProductController extends Controller
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
-        return view('admin.products.create', compact('categories'));
+        $attributeTypes = AttributeType::where('is_active', true)
+            ->with('values')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        // Préparer les données pour JavaScript
+        $attributeTypesJson = $attributeTypes->map(function($type) {
+            return [
+                'id' => $type->id,
+                'name' => $type->name,
+                'type' => $type->type,
+                'values' => $type->values->map(function($value) {
+                    return [
+                        'id' => $value->id,
+                        'value' => $value->value,
+                        'color_code' => $value->color_code,
+                        'image' => $value->image ? url('storage/' . $value->image) : null,
+                    ];
+                })->values()
+            ];
+        })->values();
+        
+        return view('admin.products.create', compact('categories', 'attributeTypes', 'attributeTypesJson'));
     }
 
     /**
@@ -73,6 +99,10 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'attributes' => 'nullable|array',
+            'attributes.*.attribute_type_id' => 'required|exists:attribute_types,id',
+            'attributes.*.values' => 'required|array|min:1',
+            'attributes.*.values.*' => 'exists:attribute_values,id',
         ]);
 
         // Générer le slug
@@ -101,6 +131,11 @@ class AdminProductController extends Controller
             $product->categories()->attach($request->category_id);
         }
 
+        // Gérer les attributs
+        if ($request->filled('attributes')) {
+            $this->saveProductAttributes($product, $request->input('attributes', []));
+        }
+
         return redirect()->route('admin.products.index')
             ->with('success', 'Produit créé avec succès !');
     }
@@ -119,9 +154,48 @@ class AdminProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $product->load('categories');
+        $product->load(['categories', 'productAttributes.values']);
         $categories = Category::where('is_active', true)->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $attributeTypes = AttributeType::where('is_active', true)
+            ->with('values')
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+        
+        // Préparer les données pour JavaScript
+        $attributeTypesJson = $attributeTypes->map(function($type) {
+            return [
+                'id' => $type->id,
+                'name' => $type->name,
+                'type' => $type->type,
+                'slug' => $type->slug,
+                'values' => $type->values->map(function($value) {
+                    return [
+                        'id' => $value->id,
+                        'value' => $value->value,
+                        'color_code' => $value->color_code,
+                        'image' => $value->image ? url('storage/' . $value->image) : null,
+                    ];
+                })->values()
+            ];
+        })->values();
+        
+        // Préparer les attributs existants pour le JavaScript
+        $existingAttributes = [];
+        foreach ($product->productAttributes as $productAttribute) {
+            $attributeType = $attributeTypes->firstWhere('slug', $productAttribute->slug);
+            if ($attributeType) {
+                $selectedValues = $productAttribute->values->pluck('value')->toArray();
+                $selectedValueIds = $attributeType->values->whereIn('value', $selectedValues)->pluck('id')->toArray();
+                
+                $existingAttributes[] = [
+                    'attribute_type_id' => $attributeType->id,
+                    'selected_values' => $selectedValueIds,
+                ];
+            }
+        }
+        
+        return view('admin.products.edit', compact('product', 'categories', 'attributeTypes', 'attributeTypesJson', 'existingAttributes'));
     }
 
     /**
@@ -145,6 +219,10 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'attributes' => 'nullable|array',
+            'attributes.*.attribute_type_id' => 'required|exists:attribute_types,id',
+            'attributes.*.values' => 'required|array|min:1',
+            'attributes.*.values.*' => 'exists:attribute_values,id',
         ]);
 
         // Générer le slug si le nom a changé
@@ -179,6 +257,15 @@ class AdminProductController extends Controller
             $product->categories()->sync([$request->category_id]);
         }
 
+        // Mettre à jour les attributs
+        // Supprimer tous les anciens attributs
+        $product->productAttributes()->delete();
+        
+        // Ajouter les nouveaux attributs
+        if ($request->filled('attributes')) {
+            $this->saveProductAttributes($product, $request->input('attributes', []));
+        }
+
         return redirect()->route('admin.products.index')
             ->with('success', 'Produit mis à jour avec succès !');
     }
@@ -197,6 +284,51 @@ class AdminProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produit supprimé avec succès !');
+    }
+
+    /**
+     * Sauvegarder les attributs d'un produit
+     */
+    private function saveProductAttributes(Product $product, array $attributes)
+    {
+        foreach ($attributes as $index => $attributeData) {
+            $attributeType = AttributeType::findOrFail($attributeData['attribute_type_id']);
+            
+            // Créer ou récupérer l'attribut du produit
+            $productAttribute = ProductAttribute::firstOrCreate(
+                [
+                    'product_id' => $product->id,
+                    'slug' => $attributeType->slug,
+                ],
+                [
+                    'name' => $attributeType->name,
+                    'sort_order' => $index,
+                    'is_active' => true,
+                ]
+            );
+
+            // Mettre à jour le nom et l'ordre si l'attribut existe déjà
+            $productAttribute->update([
+                'name' => $attributeType->name,
+                'sort_order' => $index,
+            ]);
+
+            // Supprimer les anciennes valeurs
+            $productAttribute->values()->delete();
+
+            // Ajouter les nouvelles valeurs
+            foreach ($attributeData['values'] as $valueOrder => $attributeValueId) {
+                $attributeValue = \App\Models\AttributeValue::findOrFail($attributeValueId);
+                
+                ProductAttributeValue::create([
+                    'attribute_id' => $productAttribute->id,
+                    'value' => $attributeValue->value,
+                    'color_code' => $attributeValue->color_code,
+                    'image' => $attributeValue->image,
+                    'sort_order' => $valueOrder,
+                ]);
+            }
+        }
     }
 }
 

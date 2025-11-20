@@ -117,7 +117,7 @@
             
             <!-- Code promo -->
             <div class="mb-4 border-t pt-3">
-                <form method="GET" action="{{ route('orders.checkout') }}" id="coupon-form" 
+                <form method="GET" action="{{ route('cart.checkout') }}" id="coupon-form" 
                       x-data="{ couponCode: '{{ request('coupon_code') ?? '' }}', loading: false }">
                     <label for="coupon_code" class="block text-xs font-medium mb-1">Code promo</label>
                     <div class="flex gap-2">
@@ -137,7 +137,7 @@
                         <p class="text-green-600 text-xs mt-1 font-medium">Code promo appliqué : -{{ number_format($discount, 0, ',', ' ') }} FCFA</p>
                     @endif
                     @if(request()->coupon_code && $coupon)
-                        <a href="{{ route('orders.checkout') }}" class="text-xs text-red-600 hover:underline mt-1 block">Retirer le code promo</a>
+                        <a href="{{ route('cart.checkout') }}" class="text-xs text-red-600 hover:underline mt-1 block">Retirer le code promo</a>
                     @endif
                 </form>
             </div>
@@ -148,7 +148,7 @@
                 <label for="shipping_rate_select" class="block text-xs font-medium mb-2">Méthode de livraison</label>
                 <select id="shipping_rate_select" 
                         class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500"
-                        onchange="document.getElementById('shipping_rate_id_input').value = this.value; window.location.href = '{{ route('orders.checkout') }}?coupon_code=' + encodeURIComponent('{{ request('coupon_code') ?? '' }}') + '&shipping_rate_id=' + this.value;">
+                        onchange="document.getElementById('shipping_rate_id_input').value = this.value; window.location.href = '{{ route('cart.checkout') }}?coupon_code=' + encodeURIComponent('{{ request('coupon_code') ?? '' }}') + '&shipping_rate_id=' + this.value;">
                     @foreach($shippingRates as $rate)
                         <option value="{{ $rate->id }}" 
                                 {{ (isset($shippingRate) && $shippingRate->id === $rate->id) || (!isset($shippingRate) && $loop->first) ? 'selected' : '' }}

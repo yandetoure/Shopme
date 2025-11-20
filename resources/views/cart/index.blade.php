@@ -20,7 +20,30 @@
                             <a href="{{ route('products.show', $item->product->slug) }}" class="font-semibold text-gray-800 hover:text-orange-600 text-sm">
                                 {{ $item->product->name }}
                             </a>
-                            <p class="text-orange-600 font-bold mt-1 text-sm">{{ number_format($item->price, 0, ',', ' ') }} FCFA</p>
+                            
+                            <!-- Attributs/Variables -->
+                            @if($item->selected_attributes && count($item->selected_attributes) > 0)
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @foreach($item->selected_attributes as $attributeName => $attributeValue)
+                                        @php
+                                            // Chercher la valeur d'attribut correspondante pour afficher la couleur/image
+                                            $productAttribute = $item->product->productAttributes->firstWhere('name', $attributeName);
+                                            $attributeValueObj = $productAttribute ? $productAttribute->values->firstWhere('value', $attributeValue) : null;
+                                        @endphp
+                                        <div class="flex items-center space-x-1 px-2 py-0.5 bg-gray-100 rounded text-xs">
+                                            @if($attributeValueObj && $attributeValueObj->color_code)
+                                                <div class="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0" style="background-color: {{ $attributeValueObj->color_code }}"></div>
+                                            @endif
+                                            @if($attributeValueObj && $attributeValueObj->image)
+                                                <img src="{{ asset('storage/' . $attributeValueObj->image) }}" alt="{{ $attributeValue }}" class="w-3 h-3 object-cover rounded flex-shrink-0">
+                                            @endif
+                                            <span class="text-gray-700">{{ ucfirst($attributeName) }}: <strong>{{ $attributeValue }}</strong></span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                            
+                            <p class="text-orange-600 font-bold mt-2 text-sm">{{ number_format($item->price, 0, ',', ' ') }} FCFA</p>
                             
                             <div class="mt-4 flex items-center gap-4">
                                 <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center gap-2">

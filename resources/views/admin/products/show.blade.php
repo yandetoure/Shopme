@@ -98,6 +98,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Attributs/Variables -->
+    @if($product->productAttributes && $product->productAttributes->count() > 0)
+    <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="text-sm font-semibold text-gray-800 mb-4">Attributs/Variables</h3>
+        <div class="space-y-4">
+            @foreach($product->productAttributes as $attribute)
+            <div class="border rounded-lg p-3">
+                <h4 class="text-xs font-semibold text-gray-700 mb-2">{{ $attribute->name }}</h4>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($attribute->values as $value)
+                    <div class="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 rounded-lg border">
+                        @if($value->color_code)
+                            <div class="w-5 h-5 rounded-full border border-gray-300 flex-shrink-0" style="background-color: {{ $value->color_code }}"></div>
+                        @endif
+                        @if($value->image)
+                            <img src="{{ asset('storage/' . $value->image) }}" alt="{{ $value->value }}" class="w-5 h-5 object-cover rounded flex-shrink-0">
+                        @endif
+                        <span class="text-xs text-gray-700">{{ $value->value }}</span>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
