@@ -26,6 +26,14 @@ class LoginController extends Controller
             
             $user = Auth::user();
             
+            // Vérifier si le compte est actif
+            if (!$user->is_active) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Votre compte a été désactivé. Veuillez contacter l\'administrateur.',
+                ])->onlyInput('email');
+            }
+            
             // Rediriger selon le rôle
             if ($user->isSuperAdmin()) {
                 return redirect()->intended(route('dashboard.superadmin'));

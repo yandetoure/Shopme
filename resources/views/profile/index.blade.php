@@ -86,6 +86,15 @@
                             <input type="text" value="{{ ucfirst($user->roles->first()->name ?? 'Aucun rôle') }}" disabled class="w-full px-3 py-1.5 text-sm border rounded-lg bg-gray-50">
                         </div>
                     </form>
+                    <div class="mt-6 pt-4 border-t border-gray-100 md:hidden">
+                        <form action="{{ route('logout') }}" method="POST" class="w-full">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 text-sm font-semibold py-2 rounded-lg hover:bg-gray-200">
+                                <i class="fas fa-right-from-bracket"></i>
+                                Déconnexion
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 

@@ -12,7 +12,7 @@
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 pb-24 md:pb-0">
     <!-- Navigation Desktop -->
     <nav class="bg-white shadow-md sticky top-0 z-50 hidden md:block">
         <div class="container mx-auto px-4">
@@ -153,56 +153,82 @@
                     </button>
                 </div>
             </div>
-            <div x-show="open" x-cloak class="pb-4">
-                <form action="{{ route('products.index') }}" method="GET" class="mb-4">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Rechercher..." 
-                           class="w-full px-3 py-1.5 text-sm border rounded-lg">
-                </form>
-                <div class="space-y-2">
-                    <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Accueil</a>
-                    <a href="{{ route('products.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Produits</a>
-                    
-                    <!-- Catégories mobile -->
-                    @if(isset($navCategories) && $navCategories->count() > 0)
-                        <div x-data="{ openCategories: false }">
-                            <button @click="openCategories = !openCategories" class="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                                <span>Catégories</span>
-                                <i class="fas fa-chevron-down text-xs" :class="{ 'rotate-180': openCategories }"></i>
-                            </button>
-                            <div x-show="openCategories" x-cloak class="pl-2 space-y-1 max-h-[60vh] overflow-y-auto">
-                                <div class="grid grid-cols-2 gap-1">
+            <div 
+                x-show="open" 
+                x-cloak
+                class="fixed inset-0 z-50 md:hidden"
+                aria-hidden="true"
+            >
+                <div 
+                    class="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                    x-transition:enter="transition-opacity duration-200"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition-opacity duration-150"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    @click="open = false"
+                ></div>
+                <div 
+                    class="absolute inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl flex flex-col"
+                    x-transition:enter="transform transition ease-out duration-300"
+                    x-transition:enter-start="translate-x-full"
+                    x-transition:enter-end="translate-x-0"
+                    x-transition:leave="transform transition ease-in duration-200"
+                    x-transition:leave-start="translate-x-0"
+                    x-transition:leave-end="translate-x-full"
+                >
+                    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                        <span class="text-base font-semibold text-gray-900">Navigation</span>
+                        <button @click="open = false" class="p-2 rounded-full border border-gray-200 text-gray-500 hover:text-gray-800 hover:border-gray-300">
+                            <i class="fas fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-5 space-y-6 bg-gray-50">
+                        <form action="{{ route('products.index') }}" method="GET" class="relative">
+                            <input type="text" name="search" value="{{ request('search') }}" 
+                                   placeholder="Rechercher un produit ou une marque" 
+                                   class="w-full pl-11 pr-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-400 shadow-sm">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        </form>
+
+                        <!-- Catégories mobile -->
+                        @if(isset($navCategories) && $navCategories->count() > 0)
+                            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900">Catégories populaires</p>
+                                        <p class="text-xs text-gray-500">Choisissez une catégorie pour explorer</p>
+                                    </div>
+                                    <a href="{{ route('products.index') }}" class="text-xs font-semibold text-orange-500 hover:text-orange-600">Tout voir</a>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 max-h-[48vh] overflow-y-auto pr-1">
                                     @foreach($navCategories as $category)
-                                        <div class="px-2 py-1">
-                                            <a href="{{ route('category.show', $category->slug) }}" class="block text-xs font-semibold text-gray-700 hover:text-orange-600 py-1">
-                                                {{ $category->name }}
-                                            </a>
-                                            @if($category->children->count() > 0)
-                                                @foreach($category->children as $child)
-                                                    <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block pl-2 py-0.5 text-xs text-gray-500 hover:text-orange-600">
-                                                        {{ $child->name }}
-                                                    </a>
-                                                @endforeach
-                                            @endif
-                                        </div>
+                                        <a href="{{ route('category.show', $category->slug) }}" class="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-100 bg-gray-50 text-xs font-medium text-gray-700 hover:bg-orange-50 hover:border-orange-200 transition">
+                                            <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                                            <span class="truncate">{{ $category->name }}</span>
+                                        </a>
                                     @endforeach
                                 </div>
                             </div>
+                        @endif
+
+                        <div class="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Espace client</p>
+                            @auth
+                                <a href="{{ route('orders.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-gray-800 text-sm font-medium hover:border-orange-200 hover:bg-orange-50 transition">
+                                    <span><i class="fas fa-box text-orange-500 mr-2"></i>Mes Commandes</span>
+                                    <i class="fas fa-chevron-right text-xs text-gray-400"></i>
+                                </a>
+                            @else
+                                <div class="space-y-2">
+                                    <a href="{{ route('login') }}" class="block w-full text-center px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:border-orange-400">Connexion</a>
+                                    <a href="{{ route('register') }}" class="block w-full text-center px-4 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600">Inscription</a>
+                                </div>
+                            @endauth
                         </div>
-                    @endif
-                    
-                    @auth
-                        <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mon Profil</a>
-                        <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mes Favoris</a>
-                        <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Mes Commandes</a>
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Déconnexion</button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">Connexion</a>
-                        <a href="{{ route('register') }}" class="block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Inscription</a>
-                    @endauth
+                    </div>
                 </div>
             </div>
         </div>
@@ -225,6 +251,8 @@
     <main>
         @yield('content')
     </main>
+
+    @include('partials.mobile-role-tabs')
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white mt-12">

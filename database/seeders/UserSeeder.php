@@ -28,8 +28,10 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone' => '+33 1 00 00 00 00',
                 'address' => '1 Avenue du Super Admin, 75001 Paris',
+                'is_active' => true,
             ]
         );
+        $superAdmin->update(['is_active' => true]);
         if ($superAdminRole && !$superAdmin->hasRole($superAdminRole)) {
             $superAdmin->assignRole($superAdminRole);
         }
@@ -42,8 +44,10 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone' => '+33 1 23 45 67 89',
                 'address' => '123 Rue de Paris, 75001 Paris',
+                'is_active' => true,
             ]
         );
+        $admin->update(['is_active' => true]);
         if ($adminRole && !$admin->hasRole($adminRole)) {
             $admin->assignRole($adminRole);
         }
@@ -56,8 +60,10 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone' => '+33 1 98 76 54 32',
                 'address' => '456 Avenue du Commerce, 75002 Paris',
+                'is_active' => true,
             ]
         );
+        $vendeur->update(['is_active' => true]);
         if ($vendeurRole && !$vendeur->hasRole($vendeurRole)) {
             $vendeur->assignRole($vendeurRole);
         }
@@ -70,8 +76,10 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone' => '+33 6 12 34 56 78',
                 'address' => '45 Avenue des Champs, 75008 Paris',
+                'is_active' => true,
             ]
         );
+        $client->update(['is_active' => true]);
         if ($clientRole && !$client->hasRole($clientRole)) {
             $client->assignRole($clientRole);
         }
