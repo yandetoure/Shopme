@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Images du produit -->git add
+        <!-- Images du produit -->
         <div>
             @php
                 $allImages = [];
