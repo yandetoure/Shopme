@@ -43,12 +43,6 @@
                 'route_is' => 'admin.products.*',
             ];
             $mobileNavItems[] = [
-                'label' => 'Catégories',
-                'icon' => 'fa-tags',
-                'route' => 'admin.categories.index',
-                'route_is' => 'admin.categories.*',
-            ];
-            $mobileNavItems[] = [
                 'label' => 'Commandes',
                 'icon' => 'fa-shopping-cart',
                 'route' => 'admin.orders.index',
@@ -59,6 +53,18 @@
                 'icon' => 'fa-sliders-h',
                 'drawer' => 'settings',
                 'children' => [
+                    [
+                        'label' => 'Visiter site',
+                        'icon' => 'fa-home',
+                        'route' => 'home',
+                        'route_is' => 'home',
+                    ],
+                    [
+                        'label' => 'Catégories',
+                        'icon' => 'fa-tags',
+                        'route' => 'admin.categories.index',
+                        'route_is' => 'admin.categories.*',
+                    ],
                     [
                         'label' => 'Variables',
                         'icon' => 'fa-palette',

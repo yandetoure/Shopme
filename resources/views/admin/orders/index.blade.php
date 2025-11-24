@@ -6,31 +6,31 @@
 @section('content')
 <div class="space-y-4">
     <!-- Statistiques -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500">Total</p>
-            <p class="text-xl font-bold text-gray-800">{{ $stats['total'] }}</p>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
+        <div class="bg-white rounded-lg shadow p-2 md:p-4">
+            <p class="text-[10px] md:text-xs text-gray-500">Total</p>
+            <p class="text-base md:text-xl font-bold text-gray-800">{{ $stats['total'] }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500">En attente</p>
-            <p class="text-xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
+        <div class="bg-white rounded-lg shadow p-2 md:p-4">
+            <p class="text-[10px] md:text-xs text-gray-500">En attente</p>
+            <p class="text-base md:text-xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500">En traitement</p>
-            <p class="text-xl font-bold text-blue-600">{{ $stats['processing'] }}</p>
+        <div class="bg-white rounded-lg shadow p-2 md:p-4">
+            <p class="text-[10px] md:text-xs text-gray-500">En traitement</p>
+            <p class="text-base md:text-xl font-bold text-blue-600">{{ $stats['processing'] }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500">Livrées</p>
-            <p class="text-xl font-bold text-green-600">{{ $stats['delivered'] }}</p>
+        <div class="bg-white rounded-lg shadow p-2 md:p-4">
+            <p class="text-[10px] md:text-xs text-gray-500">Livrées</p>
+            <p class="text-base md:text-xl font-bold text-green-600">{{ $stats['delivered'] }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-4">
-            <p class="text-xs text-gray-500">Annulées</p>
-            <p class="text-xl font-bold text-red-600">{{ $stats['cancelled'] }}</p>
+        <div class="bg-white rounded-lg shadow p-2 md:p-4">
+            <p class="text-[10px] md:text-xs text-gray-500">Annulées</p>
+            <p class="text-base md:text-xl font-bold text-red-600">{{ $stats['cancelled'] }}</p>
         </div>
     </div>
 
     <!-- Filtres -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white rounded-lg shadow p-4 hidden md:block">
         <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Recherche</label>
