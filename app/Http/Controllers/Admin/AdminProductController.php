@@ -40,7 +40,7 @@ class AdminProductController extends Controller
             });
         }
 
-        $products = $query->orderBy('created_at', 'desc')->paginate(15);
+        $products = $query->orderBy('created_at', 'desc')->paginate(100);
         $categories = Category::where('is_active', true)->get();
 
         return view('admin.products.index', compact('products', 'categories'));
