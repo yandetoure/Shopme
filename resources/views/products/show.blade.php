@@ -5,11 +5,60 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Image du produit -->
+        <!-- Images du produit -->git add
         <div>
-            <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/600x600?text=' . urlencode($product->name) }}" 
-                 alt="{{ $product->name }}" 
-                 class="w-full rounded-lg shadow-md">
+            @php
+                $allImages = [];
+                if ($product->image) {
+                    $allImages[] = $product->image;
+                }
+                if ($product->images && is_array($product->images)) {
+                    $allImages = array_merge($allImages, $product->images);
+                }
+            @endphp
+            
+            @if(count($allImages) > 0)
+                <div x-data="{ currentImage: 0, images: {{ json_encode($allImages) }} }" class="space-y-4">
+                    <!-- Image principale (grande) -->
+                    <div class="relative bg-gray-50 rounded-lg overflow-hidden shadow-md" style="height: 600px; display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ asset('storage/' . $allImages[0]) }}" 
+                             alt="{{ $product->name }}" 
+                             style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;"
+                             x-bind:src="'{{ url('storage') }}/' + images[currentImage]"
+                             x-bind:alt="'{{ $product->name }} - Image ' + (currentImage + 1)">
+                        @if(count($allImages) > 1)
+                            <!-- Boutons navigation -->
+                            <button @click="currentImage = (currentImage - 1 + {{ count($allImages) }}) % {{ count($allImages) }}"
+                                    class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition z-10">
+                                <i class="fas fa-chevron-left text-gray-700"></i>
+                            </button>
+                            <button @click="currentImage = (currentImage + 1) % {{ count($allImages) }}"
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition z-10">
+                                <i class="fas fa-chevron-right text-gray-700"></i>
+                            </button>
+                        @endif
+                    </div>
+                    
+                    <!-- Miniatures (petites) -->
+                    @if(count($allImages) > 1)
+                    <div class="grid grid-cols-4 gap-3">
+                        @foreach($allImages as $index => $imagePath)
+                        <button @click="currentImage = {{ $index }}"
+                                :class="currentImage === {{ $index }} ? 'ring-2 ring-orange-500 border-orange-500' : 'border-2 border-gray-200 hover:border-orange-300'"
+                                class="overflow-hidden rounded-lg transition cursor-pointer">
+                            <img src="{{ asset('storage/' . $imagePath) }}" 
+                                 alt="Image {{ $index + 1 }}" 
+                                 class="w-full h-24 object-cover">
+                        </button>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+            @else
+                <img src="https://via.placeholder.com/600x600?text={{ urlencode($product->name) }}" 
+                     alt="{{ $product->name }}" 
+                     class="w-full rounded-lg shadow-md">
+            @endif
         </div>
 
         <!-- Informations du produit -->

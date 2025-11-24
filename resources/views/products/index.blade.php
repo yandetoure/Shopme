@@ -3,10 +3,27 @@
 @section('title', 'Produits - ShopMe')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8" x-data="{ showFilters: false }">
+    <div class="md:hidden mb-4">
+        <button type="button"
+                @click="showFilters = !showFilters"
+                class="w-full flex items-center justify-between bg-white shadow-md rounded-lg px-4 py-3 text-sm font-semibold text-gray-700">
+            <span>Filtres</span>
+            <i class="fas" :class="showFilters ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        </button>
+    </div>
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Filtres -->
-        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-4 h-fit sticky top-20">
+        <aside class="w-full md:w-64 bg-white rounded-lg shadow-md p-4 h-fit sticky top-20 hidden md:block"
+               :class="{ 'block': showFilters }">
+            <div class="flex items-center justify-between mb-3 md:mb-4">
+                <h3 class="font-bold text-base">Filtres</h3>
+                <button type="button"
+                        class="text-xs text-gray-500 md:hidden"
+                        @click="showFilters = false">
+                    Fermer
+                </button>
+            </div>
             <h3 class="font-bold text-base mb-3">Filtres</h3>
             
             <form method="GET" action="{{ route('products.index') }}">
@@ -58,7 +75,7 @@
             <h1 class="text-2xl font-bold mb-4">Produits</h1>
             
             @if($products->count() > 0)
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
                     @foreach($products as $product)
                         @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
                     @endforeach

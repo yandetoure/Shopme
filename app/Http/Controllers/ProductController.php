@@ -48,7 +48,8 @@ class ProductController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $products = $query->paginate(12);
+        $perPage = $this->isMobile($request) ? 100 : 30;
+        $products = $query->paginate($perPage)->appends($request->query());
         $categories = Category::whereNull('parent_id')->where('is_active', true)->get();
 
         // Récupérer les IDs des favoris si l'utilisateur est connecté
@@ -58,6 +59,17 @@ class ProductController extends Controller
         }
 
         return view('products.index', compact('products', 'categories', 'favoriteIds'));
+    }
+
+    private function isMobile(Request $request): bool
+    {
+        $userAgent = $request->userAgent();
+
+        if (!$userAgent) {
+            return false;
+        }
+
+        return (bool) preg_match('/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', $userAgent);
     }
 
     public function show($slug)

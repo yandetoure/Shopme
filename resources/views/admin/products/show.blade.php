@@ -24,10 +24,55 @@
     <!-- Informations principales -->
     <div class="bg-white rounded-lg shadow p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Image -->
+            <!-- Images -->
             <div>
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full rounded-lg">
+                @php
+                    $allImages = [];
+                    if ($product->image) {
+                        $allImages[] = $product->image;
+                    }
+                    if ($product->images && is_array($product->images)) {
+                        $allImages = array_merge($allImages, $product->images);
+                    }
+                @endphp
+                
+                @if(count($allImages) > 0)
+                    <div x-data="{ currentImage: 0, images: {{ json_encode($allImages) }} }" class="space-y-4">
+                        <!-- Image principale (grande) -->
+                        <div class="relative bg-gray-100 rounded-lg overflow-hidden" style="height: 500px; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ asset('storage/' . $allImages[0]) }}" 
+                                 alt="{{ $product->name }}" 
+                                 style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;"
+                                 x-bind:src="'{{ url('storage') }}/' + images[currentImage]"
+                                 x-bind:alt="'{{ $product->name }} - Image ' + (currentImage + 1)">
+                            @if(count($allImages) > 1)
+                                <!-- Boutons navigation -->
+                                <button @click="currentImage = (currentImage - 1 + {{ count($allImages) }}) % {{ count($allImages) }}"
+                                        class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition">
+                                    <i class="fas fa-chevron-left text-gray-700"></i>
+                                </button>
+                                <button @click="currentImage = (currentImage + 1) % {{ count($allImages) }}"
+                                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition">
+                                    <i class="fas fa-chevron-right text-gray-700"></i>
+                                </button>
+                            @endif
+                        </div>
+                        
+                        <!-- Miniatures (petites) -->
+                        @if(count($allImages) > 1)
+                        <div class="grid grid-cols-4 gap-2">
+                            @foreach($allImages as $index => $imagePath)
+                            <button @click="currentImage = {{ $index }}"
+                                    :class="currentImage === {{ $index }} ? 'ring-2 ring-orange-500 border-orange-500' : 'border-2 border-gray-200 hover:border-orange-300'"
+                                    class="overflow-hidden rounded-lg transition">
+                                <img src="{{ asset('storage/' . $imagePath) }}" 
+                                     alt="Image {{ $index + 1 }}" 
+                                     class="w-full h-20 object-cover">
+                            </button>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
                 @else
                     <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
                         <i class="fas fa-image text-gray-400 text-2xl"></i>

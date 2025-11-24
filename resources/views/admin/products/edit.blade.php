@@ -124,19 +124,79 @@
                     </label>
                 </div>
 
-                <!-- Image actuelle -->
+                <!-- Image principale actuelle -->
                 @if($product->image)
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Image actuelle</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Image principale actuelle</label>
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-32 h-32 object-cover rounded">
                 </div>
                 @endif
 
-                <!-- Nouvelle image -->
+                <!-- Nouvelle image principale -->
                 <div class="md:col-span-2">
-                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle image</label>
+                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Nouvelle image principale</label>
                     <input type="file" id="image" name="image" accept="image/*"
                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+
+                <!-- Images secondaires existantes -->
+                @php
+                    $existingImages = $product->images ?? [];
+                @endphp
+                @if(count($existingImages) > 0)
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Images secondaires actuelles</label>
+                    <div id="existing-images-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        @foreach($existingImages as $index => $imagePath)
+                        <div class="relative group existing-image-item">
+                            <img src="{{ asset('storage/' . $imagePath) }}" alt="Image {{ $index + 1 }}" class="w-full h-32 object-cover rounded-lg border">
+                            <input type="hidden" name="existing_images[]" value="{{ $imagePath }}">
+                            <button type="button" 
+                                    onclick="removeExistingImage(this)"
+                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Nouvelles images secondaires -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Ajouter des images secondaires</label>
+                    <div x-data="{ images: [] }" class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <input type="file" 
+                                   id="secondary_images" 
+                                   name="secondary_images[]" 
+                                   accept="image/*" 
+                                   multiple
+                                   @change="
+                                       const files = Array.from($event.target.files);
+                                       images = [];
+                                       files.forEach(file => {
+                                           const reader = new FileReader();
+                                           reader.onload = (e) => {
+                                               images.push({ file: file.name, preview: e.target.result });
+                                           };
+                                           reader.readAsDataURL(file);
+                                       });
+                                   "
+                                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" x-show="images.length > 0">
+                            <template x-for="(image, index) in images" :key="index">
+                                <div class="relative group">
+                                    <img :src="image.preview" :alt="image.file" class="w-full h-32 object-cover rounded-lg border">
+                                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition rounded-lg flex items-center justify-center">
+                                        <span class="text-white text-xs opacity-0 group-hover:opacity-100">Image sélectionnée</span>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <p class="text-xs text-gray-500">Vous pouvez sélectionner plusieurs images à la fois. Pour supprimer une image, re-sélectionnez les fichiers sans celle-ci.</p>
+                    </div>
                 </div>
             </div>
 
@@ -277,6 +337,14 @@
             });
         }
     });
+
+    // Supprimer une image existante
+    function removeExistingImage(button) {
+        const imageContainer = button.closest('.existing-image-item');
+        if (imageContainer && confirm('Êtes-vous sûr de vouloir supprimer cette image ?')) {
+            imageContainer.remove();
+        }
+    }
 </script>
 @endsection
 

@@ -97,6 +97,8 @@ class AdminProductController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|max:2048',
+            'secondary_images' => 'nullable|array',
+            'secondary_images.*' => 'image|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
             'attributes' => 'nullable|array',
@@ -114,9 +116,20 @@ class AdminProductController extends Controller
             $counter++;
         }
 
-        // Upload de l'image
+        // Upload de l'image principale
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        // Upload des images secondaires
+        $secondaryImages = [];
+        if ($request->hasFile('secondary_images')) {
+            foreach ($request->file('secondary_images') as $file) {
+                $secondaryImages[] = $file->store('products', 'public');
+            }
+        }
+        if (!empty($secondaryImages)) {
+            $validated['images'] = $secondaryImages;
         }
 
         $validated['slug'] = $slug;
@@ -217,6 +230,9 @@ class AdminProductController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|max:2048',
+            'secondary_images' => 'nullable|array',
+            'secondary_images.*' => 'image|max:2048',
+            'existing_images' => 'nullable|array',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
             'attributes' => 'nullable|array',
@@ -237,13 +253,40 @@ class AdminProductController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // Upload de la nouvelle image
+        // Upload de la nouvelle image principale
         if ($request->hasFile('image')) {
             // Supprimer l'ancienne image
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
             $validated['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        // Gérer les images secondaires
+        $existingImages = $request->input('existing_images', []);
+        $currentImages = $product->images ?? [];
+        
+        // Supprimer les images qui ne sont plus dans existing_images
+        $imagesToDelete = array_diff($currentImages, $existingImages);
+        foreach ($imagesToDelete as $imageToDelete) {
+            Storage::disk('public')->delete($imageToDelete);
+        }
+        
+        // Ajouter les nouvelles images secondaires
+        $newSecondaryImages = [];
+        if ($request->hasFile('secondary_images')) {
+            foreach ($request->file('secondary_images') as $file) {
+                $newSecondaryImages[] = $file->store('products', 'public');
+            }
+        }
+        
+        // Combiner les images existantes (qui n'ont pas été supprimées) avec les nouvelles
+        $allSecondaryImages = array_merge($existingImages, $newSecondaryImages);
+        if (!empty($allSecondaryImages)) {
+            $validated['images'] = $allSecondaryImages;
+        } elseif (empty($existingImages) && empty($newSecondaryImages)) {
+            // Si aucune image secondaire n'est conservée, on peut laisser null ou un tableau vide
+            $validated['images'] = null;
         }
 
         $validated['in_stock'] = $validated['stock_quantity'] > 0;
@@ -275,9 +318,16 @@ class AdminProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Supprimer l'image
+        // Supprimer l'image principale
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
+        }
+
+        // Supprimer les images secondaires
+        if ($product->images && is_array($product->images)) {
+            foreach ($product->images as $image) {
+                Storage::disk('public')->delete($image);
+            }
         }
 
         $product->delete();

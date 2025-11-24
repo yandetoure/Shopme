@@ -5,7 +5,8 @@
 @section('content')
 <!-- Hero Section Carousel -->
 @if(isset($heroProducts) && $heroProducts->count() > 0)
-<section class="bg-black text-white relative overflow-hidden min-h-[500px] md:min-h-[600px]" 
+<section class="bg-black text-white relative min-h-[350px] md:min-h-[600px]" 
+         style="overflow: hidden; position: relative; isolation: isolate;"
          x-data="{
              currentSlide: 0,
              slides: {{ $heroProducts->count() }},
@@ -21,24 +22,25 @@
          }"
          x-init="setInterval(() => next(), 5000)">
     <!-- Image de fond dynamique -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0" style="overflow: hidden; position: absolute; top: 0; left: 0; right: 0; bottom: 0; contain: layout style paint;">
         @foreach($heroProducts as $index => $product)
         <div x-show="currentSlide === {{ $index }}"
+             x-cloak
              x-transition:enter="transition ease-out duration-1000"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-30"
              x-transition:leave="transition ease-in duration-1000"
              x-transition:leave-start="opacity-30"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
-             style="background-image: url('{{ asset('storage/' . $product->image) }}'); opacity: 0.3;">
+             class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+             style="background-image: url('{{ asset('storage/' . $product->image) }}'); opacity: 0.3; position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
         </div>
         @endforeach
         <!-- Overlay sombre pour lisibilité -->
-        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/50"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/50 z-10"></div>
     </div>
 
-    <div class="container mx-auto px-4 py-12 md:py-16 relative z-10">
+    <div class="container mx-auto px-4 py-6 md:py-16 relative z-10">
         <!-- Boutons navigation -->
         <div class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 hidden md:block">
             <button @click="prev()" class="bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition">
