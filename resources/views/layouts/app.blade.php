@@ -25,6 +25,12 @@
                 'route' => 'products.index',
                 'route_is' => 'products.*',
             ],
+            [
+                'label' => 'Catégories',
+                'route' => 'products.index',
+                'route_is' => 'category.*',
+                'is_categories' => true,
+            ],
         ];
 
         if(auth()->check()) {
@@ -95,51 +101,52 @@
                 <!-- Navigation principale -->
                 <div class="flex items-center space-x-6">
                     @foreach($primaryNavLinks as $link)
-                        <a href="{{ route($link['route']) }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs($link['route_is']) ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
-                            {{ $link['label'] }}
-                        </a>
-                    @endforeach
-                    
-                    <!-- Dropdown Catégories -->
-                    @if(isset($navCategories) && $navCategories->count() > 0)
-                    <div class="relative group">
-                        <button class="text-gray-700 hover:text-orange-500 font-medium flex items-center {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
-                            Catégories
-                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                        </button>
-                        <div class="absolute left-0 mt-2 w-[960px] bg-white rounded-lg shadow-xl border border-gray-100 py-4 px-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[75vh] overflow-y-auto">
-                            <div class="grid grid-cols-6 gap-x-4 gap-y-3">
-                                @foreach($navCategories as $category)
-                                    <div class="border-r border-gray-100 last:border-r-0 pr-3 last:pr-0">
-                                        @if($category->children->count() > 0)
-                                            <!-- Catégorie avec sous-catégories -->
-                                            <a href="{{ route('category.show', $category->slug) }}" class="text-xs font-semibold text-gray-900 hover:text-orange-600 block mb-2 pb-1 border-b border-gray-100">
-                                                {{ $category->name }}
-                                            </a>
-                                            <div class="space-y-1">
-                                                @foreach($category->children->take(6) as $child)
-                                                    <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block text-xs text-gray-600 hover:text-orange-600 hover:pl-1 transition-all py-0.5 truncate" title="{{ $child->name }}">
-                                                        {{ $child->name }}
+                        @if(!empty($link['is_categories']) && isset($navCategories) && $navCategories->count() > 0)
+                            <div class="relative group">
+                                <button class="text-gray-700 hover:text-orange-500 font-medium flex items-center {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                                    Catégories
+                                    <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                                </button>
+                                <div class="absolute left-0 mt-2 w-[960px] bg-white rounded-lg shadow-xl border border-gray-100 py-4 px-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 max-h-[75vh] overflow-y-auto">
+                                    <div class="grid grid-cols-6 gap-x-4 gap-y-3">
+                                        @foreach($navCategories as $category)
+                                            <div class="border-r border-gray-100 last:border-r-0 pr-3 last:pr-0">
+                                                @if($category->children->count() > 0)
+                                                    <a href="{{ route('category.show', $category->slug) }}" class="text-xs font-semibold text-gray-900 hover:text-orange-600 block mb-2 pb-1 border-b border-gray-100">
+                                                        {{ $category->name }}
                                                     </a>
-                                                @endforeach
-                                                @if($category->children->count() > 6)
-                                                    <a href="{{ route('category.show', $category->slug) }}" class="block text-xs text-orange-600 font-medium hover:text-orange-700 mt-1">
-                                                        +{{ $category->children->count() - 6 }} autres...
+                                                    <div class="space-y-1">
+                                                        @foreach($category->children->take(6) as $child)
+                                                            <a href="{{ route('category.subcategory', [$category->slug, $child->slug]) }}" class="block text-xs text-gray-600 hover:text-orange-600 hover:pl-1 transition-all py-0.5 truncate" title="{{ $child->name }}">
+                                                                {{ $child->name }}
+                                                            </a>
+                                                        @endforeach
+                                                        @if($category->children->count() > 6)
+                                                            <a href="{{ route('category.show', $category->slug) }}" class="block text-xs text-orange-600 font-medium hover:text-orange-700 mt-1">
+                                                                +{{ $category->children->count() - 6 }} autres...
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <a href="{{ route('category.show', $category->slug) }}" class="block text-xs font-semibold text-gray-900 hover:text-orange-600 py-1">
+                                                        {{ $category->name }}
                                                     </a>
                                                 @endif
                                             </div>
-                                        @else
-                                            <!-- Catégorie sans sous-catégories -->
-                                            <a href="{{ route('category.show', $category->slug) }}" class="block text-xs font-semibold text-gray-900 hover:text-orange-600 py-1">
-                                                {{ $category->name }}
-                                            </a>
-                                        @endif
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    @endif
+                        @elseif(!empty($link['is_categories']))
+                            <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                                Catégories
+                            </a>
+                        @else
+                            <a href="{{ isset($link['route']) ? route($link['route']) : '#' }}" class="text-gray-700 hover:text-orange-500 font-medium {{ isset($link['route_is']) && request()->routeIs($link['route_is']) ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                                {{ $link['label'] }}
+                            </a>
+                        @endif
+                    @endforeach
                 </div>
                 
                 <div class="flex-1 max-w-md mx-4">
