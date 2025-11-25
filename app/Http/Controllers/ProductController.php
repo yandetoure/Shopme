@@ -48,7 +48,7 @@ class ProductController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $perPage = $this->isMobile($request) ? 100 : 30;
+        $perPage = $this->isMobile($request) ? 100 : 50;
         $products = $query->paginate($perPage)->appends($request->query());
         $categories = Category::whereNull('parent_id')->where('is_active', true)->get();
 

@@ -13,6 +13,77 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50 pb-24 md:pb-0">
+    @php
+        $primaryNavLinks = [
+            [
+                'label' => 'Accueil',
+                'route' => 'home',
+                'route_is' => 'home',
+            ],
+            [
+                'label' => 'Produits',
+                'route' => 'products.index',
+                'route_is' => 'products.*',
+            ],
+        ];
+
+        if(auth()->check()) {
+            $currentUser = auth()->user();
+
+            if($currentUser->isSuperAdmin()) {
+                $primaryNavLinks[] = [
+                    'label' => 'Dashboard',
+                    'route' => 'dashboard.superadmin',
+                    'route_is' => 'dashboard.*',
+                ];
+                $primaryNavLinks[] = [
+                    'label' => 'Admin',
+                    'route' => 'admin.products.index',
+                    'route_is' => 'admin.*',
+                ];
+            } elseif($currentUser->isAdmin()) {
+                $primaryNavLinks[] = [
+                    'label' => 'Dashboard',
+                    'route' => 'dashboard.admin',
+                    'route_is' => 'dashboard.*',
+                ];
+                $primaryNavLinks[] = [
+                    'label' => 'Gestion',
+                    'route' => 'admin.products.index',
+                    'route_is' => 'admin.*',
+                ];
+            } elseif($currentUser->isVendeur()) {
+                $primaryNavLinks[] = [
+                    'label' => 'Dashboard',
+                    'route' => 'dashboard.vendeur',
+                    'route_is' => 'dashboard.*',
+                ];
+                $primaryNavLinks[] = [
+                    'label' => 'Mes commandes',
+                    'route' => 'orders.index',
+                    'route_is' => 'orders.*',
+                ];
+            } elseif($currentUser->isClient()) {
+                $primaryNavLinks[] = [
+                    'label' => 'Favoris',
+                    'route' => 'favorites.index',
+                    'route_is' => 'favorites.*',
+                ];
+                $primaryNavLinks[] = [
+                    'label' => 'Commandes',
+                    'route' => 'orders.index',
+                    'route_is' => 'orders.*',
+                ];
+            }
+        } else {
+            $primaryNavLinks[] = [
+                'label' => 'Connexion',
+                'route' => 'login',
+                'route_is' => 'login',
+            ];
+        }
+    @endphp
+
     <!-- Navigation Desktop -->
     <nav class="bg-white shadow-md sticky top-0 z-50 hidden md:block">
         <div class="container mx-auto px-4">
@@ -23,8 +94,11 @@
                 
                 <!-- Navigation principale -->
                 <div class="flex items-center space-x-6">
-                    <a href="{{ route('home') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('home') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">Accueil</a>
-                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('products.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">Produits</a>
+                    @foreach($primaryNavLinks as $link)
+                        <a href="{{ route($link['route']) }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs($link['route_is']) ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                            {{ $link['label'] }}
+                        </a>
+                    @endforeach
                     
                     <!-- Dropdown Catégories -->
                     @if(isset($navCategories) && $navCategories->count() > 0)

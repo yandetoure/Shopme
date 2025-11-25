@@ -82,6 +82,30 @@
                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                 </div>
 
+                <!-- Prix d'achat interne -->
+                <div>
+                    <label for="purchase_price" class="block text-sm font-medium text-gray-700 mb-2">Prix fournisseur (FCFA)</label>
+                    <input type="number" id="purchase_price" name="purchase_price" value="{{ old('purchase_price', $product->purchase_price) }}" step="1" min="0"
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+
+                <!-- Fournisseur -->
+                <div>
+                    <label for="supplier_name" class="block text-sm font-medium text-gray-700 mb-2">Fournisseur</label>
+                    <input type="text" id="supplier_name" name="supplier_name" value="{{ old('supplier_name', $product->supplier_name) }}"
+                           class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                </div>
+
+                <!-- Unité de vente -->
+                <div>
+                    <label for="sale_unit" class="block text-sm font-medium text-gray-700 mb-2">Conditionnement</label>
+                    <select id="sale_unit" name="sale_unit"
+                            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <option value="unit" {{ old('sale_unit', $product->sale_unit ?? 'unit') == 'unit' ? 'selected' : '' }}>Unité</option>
+                        <option value="dozen" {{ old('sale_unit', $product->sale_unit ?? 'unit') == 'dozen' ? 'selected' : '' }}>Douzaine</option>
+                    </select>
+                </div>
+
                 <!-- En promotion -->
                 <div>
                     <label class="flex items-center mt-6">
@@ -121,6 +145,15 @@
                         <input type="checkbox" name="featured" value="1" {{ old('featured', $product->featured) ? 'checked' : '' }}
                                class="mr-2">
                         <span class="text-sm font-medium text-gray-700">Mettre en vedette</span>
+                    </label>
+                </div>
+
+                <!-- Découverte -->
+                <div>
+                    <label class="flex items-center mt-6">
+                        <input type="checkbox" name="is_discovery" value="1" {{ old('is_discovery', $product->is_discovery) ? 'checked' : '' }}
+                               class="mr-2">
+                        <span class="text-sm font-medium text-gray-700">Afficher dans Découvertes</span>
                     </label>
                 </div>
 

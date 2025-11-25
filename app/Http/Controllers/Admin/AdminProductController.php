@@ -96,11 +96,15 @@ class AdminProductController extends Controller
             'is_on_sale' => 'boolean',
             'stock_quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'supplier_name' => 'nullable|string|max:255',
+            'sale_unit' => 'required|in:unit,dozen',
             'image' => 'nullable|image|max:2048',
             'secondary_images' => 'nullable|array',
             'secondary_images.*' => 'image|max:2048',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'is_discovery' => 'boolean',
             'attributes' => 'nullable|array',
             'attributes.*.attribute_type_id' => 'required|exists:attribute_types,id',
             'attributes.*.values' => 'required|array|min:1',
@@ -134,6 +138,8 @@ class AdminProductController extends Controller
 
         $validated['slug'] = $slug;
         $validated['in_stock'] = $validated['stock_quantity'] > 0;
+        $validated['sale_unit'] = $validated['sale_unit'] ?? 'unit';
+        $validated['is_discovery'] = $request->boolean('is_discovery');
 
         $product = Product::create($validated);
 
@@ -229,12 +235,16 @@ class AdminProductController extends Controller
             'is_on_sale' => 'boolean',
             'stock_quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0',
+            'purchase_price' => 'nullable|numeric|min:0',
+            'supplier_name' => 'nullable|string|max:255',
+            'sale_unit' => 'required|in:unit,dozen',
             'image' => 'nullable|image|max:2048',
             'secondary_images' => 'nullable|array',
             'secondary_images.*' => 'image|max:2048',
             'existing_images' => 'nullable|array',
             'status' => 'required|in:active,inactive',
             'featured' => 'boolean',
+            'is_discovery' => 'boolean',
             'attributes' => 'nullable|array',
             'attributes.*.attribute_type_id' => 'required|exists:attribute_types,id',
             'attributes.*.values' => 'required|array|min:1',
@@ -290,6 +300,8 @@ class AdminProductController extends Controller
         }
 
         $validated['in_stock'] = $validated['stock_quantity'] > 0;
+        $validated['sale_unit'] = $validated['sale_unit'] ?? 'unit';
+        $validated['is_discovery'] = $request->boolean('is_discovery');
 
         $product->update($validated);
 

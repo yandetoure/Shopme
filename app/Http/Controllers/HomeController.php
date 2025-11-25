@@ -82,6 +82,30 @@ class HomeController extends Controller
             $favoriteIds = Auth::user()->favorites()->pluck('product_id')->toArray();
         }
 
-        return view('home', compact('categories', 'featuredProducts', 'onSaleProducts', 'latestProducts', 'categoryProducts', 'heroProducts', 'flashSaleProducts', 'favoriteIds'));
+        $randomProducts = Product::active()
+            ->where('is_discovery', true)
+            ->whereNotNull('image')
+            ->limit(10)
+            ->get();
+
+        if ($randomProducts->isEmpty()) {
+            $randomProducts = Product::active()
+                ->inRandomOrder()
+                ->whereNotNull('image')
+                ->limit(10)
+                ->get();
+        }
+
+        return view('home', compact(
+            'categories',
+            'featuredProducts',
+            'onSaleProducts',
+            'latestProducts',
+            'categoryProducts',
+            'heroProducts',
+            'flashSaleProducts',
+            'favoriteIds',
+            'randomProducts'
+        ));
     }
 }

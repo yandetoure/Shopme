@@ -23,8 +23,12 @@ class Product extends Model
         'in_stock',
         'image',
         'images',
+        'purchase_price',
+        'supplier_name',
+        'sale_unit',
         'status',
         'featured',
+        'is_discovery',
         'weight',
         'attributes',
         'views',
@@ -37,9 +41,11 @@ class Product extends Model
         'is_on_sale' => 'boolean',
         'in_stock' => 'boolean',
         'featured' => 'boolean',
+        'is_discovery' => 'boolean',
         'images' => 'array',
         'attributes' => 'array',
         'weight' => 'decimal:2',
+        'purchase_price' => 'decimal:2',
     ];
 
     /**

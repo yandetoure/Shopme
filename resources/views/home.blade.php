@@ -290,22 +290,115 @@ setInterval(updateCountdown, 1000);
 
 <!-- Catégories -->
 @if(isset($categories) && $categories->count() > 0)
-<section class="py-12 container mx-auto px-4">
-    <h2 class="text-2xl font-bold mb-6">Catégories</h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        @foreach($categories as $category)
-            <a href="{{ route('category.show', $category->slug) }}" class="group">
-                <div class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-xl transition">
-                    <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center group-hover:bg-orange-500 transition">
-                        <i class="fas fa-tag text-orange-600 group-hover:text-white text-2xl"></i>
+<section class="py-8 container mx-auto px-4">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Catégories</h2>
+        <a href="{{ route('products.index') }}" class="text-sm text-orange-600 hover:text-orange-700 font-medium">Voir tout</a>
+    </div>
+    <div class="relative"
+         x-data="{
+            scrollPosition: 0,
+            canScrollLeft: false,
+            canScrollRight: true,
+            checkScroll() {
+                const container = this.$refs.categorySlider;
+                this.canScrollLeft = container.scrollLeft > 0;
+                this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 10);
+            },
+            scroll(direction) {
+                const container = this.$refs.categorySlider;
+                const scrollAmount = 260;
+                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+                setTimeout(() => this.checkScroll(), 300);
+            }
+         }"
+         x-init="checkScroll()"
+    >
+        <button @click="scroll(-1)"
+                :class="canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-100 transition">
+            <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+
+        <div x-ref="categorySlider"
+             @scroll="checkScroll()"
+             class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-6"
+             style="scrollbar-width: none; -ms-overflow-style: none;">
+            @foreach($categories as $category)
+                <a href="{{ route('category.show', $category->slug) }}" class="flex-shrink-0">
+                    <div class="w-36 bg-white rounded-2xl shadow p-4 text-center hover:shadow-lg transition">
+                        <div class="w-12 h-12 bg-orange-100 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-orange-500 transition">
+                            <i class="fas fa-tag text-orange-600 group-hover:text-white"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-xs truncate">{{ $category->name }}</h3>
+                        @if($category->children->count() > 0)
+                            <p class="text-[11px] text-gray-500 mt-1">{{ $category->children->count() }} sous-catégories</p>
+                        @endif
                     </div>
-                    <h3 class="font-semibold text-gray-800 group-hover:text-orange-600 text-sm">{{ $category->name }}</h3>
-                    @if($category->children->count() > 0)
-                        <p class="text-xs text-gray-500 mt-1">{{ $category->children->count() }} sous-catégories</p>
-                    @endif
+                </a>
+            @endforeach
+        </div>
+
+        <button @click="scroll(1)"
+                :class="canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-100 transition">
+            <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
+    </div>
+</section>
+@endif
+
+<!-- Découvertes aléatoires -->
+@if(isset($randomProducts) && $randomProducts->count() > 0)
+<section class="py-6 container mx-auto px-4">
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-purple-600 text-white px-4 py-2 rounded">
+                <h2 class="text-base font-bold">Découvertes</h2>
+            </div>
+        </div>
+    </div>
+    <div class="relative"
+         x-data="{
+            scrollPosition: 0,
+            canScrollLeft: false,
+            canScrollRight: true,
+            checkScroll() {
+                const container = this.$refs.randomSlider;
+                this.canScrollLeft = container.scrollLeft > 0;
+                this.canScrollRight = container.scrollLeft < (container.scrollWidth - container.clientWidth - 10);
+            },
+            scroll(direction) {
+                const container = this.$refs.randomSlider;
+                const scrollAmount = 300;
+                container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+                setTimeout(() => this.checkScroll(), 300);
+            }
+         }"
+         x-init="checkScroll()"
+    >
+        <button @click="scroll(-1)"
+                :class="canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-100 transition">
+            <i class="fas fa-chevron-left text-gray-600"></i>
+        </button>
+
+        <div x-ref="randomSlider"
+             @scroll="checkScroll()"
+             class="flex gap-4 overflow-x-auto scrollbar-hide pb-4 px-10"
+             style="scrollbar-width: none; -ms-overflow-style: none;">
+            @foreach($randomProducts as $product)
+                <div class="flex-shrink-0 w-48 md:w-56 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                    @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
                 </div>
-            </a>
-        @endforeach
+            @endforeach
+        </div>
+
+        <button @click="scroll(1)"
+                :class="canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-100 transition">
+            <i class="fas fa-chevron-right text-gray-600"></i>
+        </button>
     </div>
 </section>
 @endif

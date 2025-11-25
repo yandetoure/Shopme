@@ -110,6 +110,22 @@
                     </p>
                 </div>
                 <div>
+                    <p class="text-xs text-gray-500">Prix fournisseur</p>
+                    <p class="text-sm font-semibold text-gray-800">
+                        {{ $product->purchase_price ? number_format($product->purchase_price, 0, '', '.') . ' FCFA' : 'Non renseigné' }}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Fournisseur</p>
+                    <p class="text-sm text-gray-800">{{ $product->supplier_name ?? 'Non renseigné' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500">Conditionnement</p>
+                    <p class="text-sm text-gray-800">
+                        {{ $product->sale_unit === 'dozen' ? 'Douzaine' : 'Unité' }}
+                    </p>
+                </div>
+                <div>
                     <p class="text-xs text-gray-500">Statut</p>
                     <p class="text-sm">
                         <span class="px-2 py-0.5 text-xs rounded-full {{ $product->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">

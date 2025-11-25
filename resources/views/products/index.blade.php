@@ -75,7 +75,7 @@
             <h1 class="text-2xl font-bold mb-4">Produits</h1>
             
             @if($products->count() > 0)
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
                     @foreach($products as $product)
                         @include('partials.product-card', ['product' => $product, 'favoriteIds' => $favoriteIds ?? []])
                     @endforeach
