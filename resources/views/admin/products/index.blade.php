@@ -49,6 +49,20 @@
         </form>
     </div>
 
+    <!-- Pagination en haut -->
+    @if($products->hasPages())
+    <div class="bg-white rounded-lg shadow p-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Affichage de {{ $products->firstItem() }} à {{ $products->lastItem() }} sur {{ $products->total() }} produits
+            </div>
+            <div>
+                {{ $products->links() }}
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Tableau des produits -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="overflow-x-auto">
