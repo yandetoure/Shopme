@@ -83,6 +83,7 @@ Route::middleware(['auth'])->group(function () {
     // Routes admin (gestion)
     Route::middleware(['role:admin|super_admin'])->prefix('admin')->name('admin.')->group(function () {
         // Produits
+        Route::post('products/bulk-action', [AdminProductController::class, 'bulkAction'])->name('products.bulk-action');
         Route::resource('products', AdminProductController::class);
         
         // Catégories

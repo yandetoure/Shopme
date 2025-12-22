@@ -78,8 +78,11 @@ class AdminSettingController extends Controller
         // Mettre à jour les paramètres
         $settings->update($data);
 
+        // Vider le cache de la vue pour que les changements soient visibles immédiatement
+        \Artisan::call('view:clear');
+
         return redirect()->route('admin.settings.index')
-            ->with('success', 'Paramètres mis à jour avec succès !');
+            ->with('success', 'Paramètres mis à jour avec succès ! Veuillez recharger la page pour voir les changements.');
     }
 }
 

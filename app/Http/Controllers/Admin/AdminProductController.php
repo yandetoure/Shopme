@@ -349,6 +349,79 @@ class AdminProductController extends Controller
     }
 
     /**
+     * Actions en masse sur les produits
+     */
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'product_ids' => 'required|string',
+        ]);
+
+        $productIds = json_decode($request->product_ids, true);
+        
+        if (!is_array($productIds) || empty($productIds)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aucun produit sélectionné.'
+            ], 400);
+        }
+
+        $products = Product::whereIn('id', $productIds)->get();
+        $count = $products->count();
+
+        try {
+            switch ($request->action) {
+                case 'activate':
+                    Product::whereIn('id', $productIds)->update(['status' => 'active']);
+                    $message = $count . ' produit(s) activé(s) avec succès !';
+                    break;
+
+                case 'deactivate':
+                    Product::whereIn('id', $productIds)->update(['status' => 'inactive']);
+                    $message = $count . ' produit(s) désactivé(s) avec succès !';
+                    break;
+
+                case 'delete':
+                    foreach ($products as $product) {
+                        // Supprimer l'image principale
+                        if ($product->image) {
+                            Storage::disk('public')->delete($product->image);
+                        }
+
+                        // Supprimer les images secondaires
+                        if ($product->images && is_array($product->images)) {
+                            foreach ($product->images as $image) {
+                                Storage::disk('public')->delete($image);
+                            }
+                        }
+                    }
+                    
+                    Product::whereIn('id', $productIds)->delete();
+                    $message = $count . ' produit(s) supprimé(s) avec succès !';
+                    break;
+
+                default:
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Action invalide.'
+                    ], 400);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'count' => $count
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Sauvegarder les attributs d'un produit
      */
     private function saveProductAttributes(Product $product, array $attributes)
