@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class AdminSettingController extends Controller
@@ -14,14 +14,7 @@ class AdminSettingController extends Controller
      */
     public function index()
     {
-        $settings = [
-            'site_name' => config('app.name', 'ShopMe'),
-            'site_email' => config('mail.from.address', ''),
-            'currency' => 'FCFA',
-            'tax_rate' => 20, // TVA en pourcentage
-            'default_shipping' => 6550, // Prix de livraison par défaut en FCFA
-        ];
-
+        $settings = Setting::getSettings();
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -31,16 +24,60 @@ class AdminSettingController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
+            // Informations générales
             'site_name' => 'required|string|max:255',
-            'site_email' => 'required|email|max:255',
+            'site_email' => 'nullable|email|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'slogan' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:50',
+            'email_contact' => 'nullable|email|max:255',
+            
+            // Couleurs
+            'navbar_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'navbar_text_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'primary_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'secondary_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'text_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'background_color' => 'nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            
+            // Typographie
+            'font_family' => 'nullable|string|max:255',
+            'heading_font' => 'nullable|string|max:255',
+            
+            // Paramètres financiers
+            'currency' => 'nullable|string|max:10',
             'tax_rate' => 'required|numeric|min:0|max:100',
             'default_shipping' => 'required|numeric|min:0',
+            
+            // Réseaux sociaux
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
         ]);
 
-        // Ici, vous pouvez sauvegarder dans un fichier de configuration
-        // ou dans une table settings si vous en avez une
-        // Pour l'instant, on affiche juste un message de succès
-        
+        $settings = Setting::getSettings();
+        $data = $validated;
+
+        // Gérer l'upload du logo
+        if ($request->hasFile('logo')) {
+            // Supprimer l'ancien logo s'il existe
+            if ($settings->logo && Storage::disk('public')->exists($settings->logo)) {
+                Storage::disk('public')->delete($settings->logo);
+            }
+            
+            // Sauvegarder le nouveau logo
+            $logoPath = $request->file('logo')->store('settings', 'public');
+            $data['logo'] = $logoPath;
+        } else {
+            // Garder l'ancien logo si aucun nouveau n'est fourni
+            unset($data['logo']);
+        }
+
+        // Mettre à jour les paramètres
+        $settings->update($data);
+
         return redirect()->route('admin.settings.index')
             ->with('success', 'Paramètres mis à jour avec succès !');
     }

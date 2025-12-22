@@ -9,6 +9,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Couleurs dynamiques du site */
+        :root {
+            --navbar-color: {{ $siteSettings->navbar_color ?? '#ffffff' }};
+            --navbar-text-color: {{ $siteSettings->navbar_text_color ?? '#000000' }};
+            --primary-color: {{ $siteSettings->primary_color ?? '#f97316' }};
+            --secondary-color: {{ $siteSettings->secondary_color ?? '#6b7280' }};
+            --text-color: {{ $siteSettings->text_color ?? '#1f2937' }};
+            --background-color: {{ $siteSettings->background_color ?? '#ffffff' }};
+        }
+        
+        .site-navbar {
+            background-color: var(--navbar-color) !important;
+            color: var(--navbar-text-color) !important;
+        }
+        
+        .site-navbar a,
+        .site-navbar button {
+            color: var(--navbar-text-color) !important;
+        }
+        
+        .site-navbar a:hover,
+        .site-navbar button:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .site-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .site-primary-bg {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .site-primary-hover:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .site-primary-bg-hover:hover {
+            background-color: var(--primary-color) !important;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: {{ $siteSettings->font_family ?? 'Inter, sans-serif' }};
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: {{ $siteSettings->heading_font ?? $siteSettings->font_family ?? 'Inter, sans-serif' }};
+        }
     </style>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
@@ -91,11 +142,15 @@
     @endphp
 
     <!-- Navigation Desktop -->
-    <nav class="bg-white shadow-md sticky top-0 z-50 hidden md:block">
+    <nav class="site-navbar shadow-md sticky top-0 z-50 hidden md:block" style="background-color: {{ $siteSettings->navbar_color ?? '#ffffff' }}; color: {{ $siteSettings->navbar_text_color ?? '#000000' }};">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <a href="{{ route('home') }}" class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="ShopMe" class="h-10">
+                    @if($siteSettings->logo)
+                        <img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'ShopMe' }}" class="h-10">
+                    @else
+                        <img src="{{ asset('images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'ShopMe' }}" class="h-10">
+                    @endif
                 </a>
                 
                 <!-- Navigation principale -->
@@ -103,7 +158,7 @@
                     @foreach($primaryNavLinks as $link)
                         @if(!empty($link['is_categories']) && isset($navCategories) && $navCategories->count() > 0)
                             <div class="relative group">
-                                <button class="text-gray-700 hover:text-orange-500 font-medium flex items-center {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                                <button class="font-medium flex items-center {{ request()->routeIs('category.*') ? 'site-primary border-b-2 pb-1' : '' }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                                     Catégories
                                     <i class="fas fa-chevron-down ml-1 text-xs"></i>
                                 </button>
@@ -138,11 +193,11 @@
                                 </div>
                             </div>
                         @elseif(!empty($link['is_categories']))
-                            <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-orange-500 font-medium {{ request()->routeIs('category.*') ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                            <a href="{{ route('products.index') }}" class="font-medium {{ request()->routeIs('category.*') ? 'site-primary border-b-2 pb-1' : '' }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                                 Catégories
                             </a>
                         @else
-                            <a href="{{ isset($link['route']) ? route($link['route']) : '#' }}" class="text-gray-700 hover:text-orange-500 font-medium {{ isset($link['route_is']) && request()->routeIs($link['route_is']) ? 'text-orange-500 border-b-2 border-orange-500 pb-1' : '' }}">
+                            <a href="{{ isset($link['route']) ? route($link['route']) : '#' }}" class="font-medium {{ isset($link['route_is']) && request()->routeIs($link['route_is']) ? 'site-primary border-b-2 pb-1' : '' }}" style="color: {{ request()->routeIs($link['route_is'] ?? '') ? ($siteSettings->primary_color ?? '#f97316') : ($siteSettings->navbar_text_color ?? '#000000') }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ request()->routeIs($link['route_is'] ?? '') ? ($siteSettings->primary_color ?? '#f97316') : ($siteSettings->navbar_text_color ?? '#000000') }}'">
                                 {{ $link['label'] }}
                             </a>
                         @endif
@@ -154,7 +209,7 @@
                         <input type="text" name="search" value="{{ request('search') }}" 
                                placeholder="Rechercher..." 
                                class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                        <button type="submit" class="absolute right-2 top-1.5 text-gray-400 hover:text-orange-500 text-sm">
+                        <button type="submit" class="absolute right-2 top-1.5 text-sm" style="color: #9ca3af;" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='#9ca3af'">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
@@ -162,7 +217,7 @@
 
                 <div class="flex items-center space-x-6">
                     @auth
-                        <a href="{{ route('favorites.index') }}" class="relative text-gray-700 hover:text-orange-500">
+                        <a href="{{ route('favorites.index') }}" class="relative" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                             <i class="fas fa-heart text-xl"></i>
                             @if(auth()->user()->favorites()->count() > 0)
                                 <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -170,7 +225,7 @@
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-orange-500">
+                        <a href="{{ route('cart.index') }}" class="relative" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                             <i class="fas fa-shopping-cart text-xl"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
                                 <span class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -178,11 +233,11 @@
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('orders.index') }}" class="text-gray-700 hover:text-orange-500">
+                        <a href="{{ route('orders.index') }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                             <i class="fas fa-box text-xl"></i>
                         </a>
                         <div class="relative group">
-                            <button class="flex items-center space-x-2 text-gray-700 hover:text-orange-500">
+                            <button class="flex items-center space-x-2" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
                                 <i class="fas fa-user-circle text-xl"></i>
                                 <span>{{ Auth::user()->name }}</span>
                             </button>
@@ -195,8 +250,8 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-orange-500">Connexion</a>
-                        <a href="{{ route('register') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">Inscription</a>
+                        <a href="{{ route('login') }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">Connexion</a>
+                        <a href="{{ route('register') }}" class="text-white px-4 py-2 rounded-lg" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }};" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Inscription</a>
                     @endauth
                 </div>
             </div>
@@ -204,11 +259,15 @@
     </nav>
 
     <!-- Navigation Mobile -->
-    <nav class="bg-white shadow-md sticky top-0 z-50 md:hidden" x-data="{ open: false }">
+    <nav class="shadow-md sticky top-0 z-50 md:hidden" style="background-color: {{ $siteSettings->navbar_color ?? '#ffffff' }}; color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" x-data="{ open: false }">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <a href="{{ route('home') }}" class="flex items-center">
-                    <img src="{{ asset('images/logo.png') }}" alt="ShopMe" class="h-8">
+                    @if($siteSettings->logo)
+                        <img src="{{ asset('storage/' . $siteSettings->logo) }}" alt="{{ $siteSettings->site_name ?? 'ShopMe' }}" class="h-8">
+                    @else
+                        <img src="{{ asset('images/logo.png') }}" alt="{{ $siteSettings->site_name ?? 'ShopMe' }}" class="h-8">
+                    @endif
                 </a>
                 <div class="flex items-center space-x-4">
                     @auth
@@ -282,7 +341,7 @@
                                         <p class="text-sm font-semibold text-gray-900">Catégories populaires</p>
                                         <p class="text-xs text-gray-500">Choisissez une catégorie pour explorer</p>
                                     </div>
-                                    <a href="{{ route('products.index') }}" class="text-xs font-semibold text-orange-500 hover:text-orange-600">Tout voir</a>
+                                    <a href="{{ route('products.index') }}" class="text-xs font-semibold" style="color: {{ $siteSettings->primary_color ?? '#f97316' }};" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Tout voir</a>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 max-h-[48vh] overflow-y-auto pr-1">
                                     @foreach($navCategories as $category)
@@ -299,13 +358,13 @@
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Espace client</p>
                             @auth
                                 <a href="{{ route('orders.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-gray-800 text-sm font-medium hover:border-orange-200 hover:bg-orange-50 transition">
-                                    <span><i class="fas fa-box text-orange-500 mr-2"></i>Mes Commandes</span>
+                                    <span><i class="fas fa-box mr-2" style="color: {{ $siteSettings->primary_color ?? '#f97316' }};"></i>Mes Commandes</span>
                                     <i class="fas fa-chevron-right text-xs text-gray-400"></i>
                                 </a>
                             @else
                                 <div class="space-y-2">
                                     <a href="{{ route('login') }}" class="block w-full text-center px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:border-orange-400">Connexion</a>
-                                    <a href="{{ route('register') }}" class="block w-full text-center px-4 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600">Inscription</a>
+                                    <a href="{{ route('register') }}" class="block w-full text-center px-4 py-2.5 rounded-lg text-white text-sm font-semibold" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }};" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Inscription</a>
                                 </div>
                             @endauth
                         </div>
@@ -340,8 +399,8 @@
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">ShopMe</h3>
-                    <p class="text-gray-400">Votre boutique en ligne préférée pour tous vos besoins.</p>
+                    <h3 class="text-xl font-bold mb-4">{{ $siteSettings->site_name ?? 'ShopMe' }}</h3>
+                    <p class="text-gray-400">{{ $siteSettings->slogan ?? 'Votre boutique en ligne préférée pour tous vos besoins.' }}</p>
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4">Liens rapides</h4>
@@ -356,8 +415,15 @@
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4">Contact</h4>
-                    <p class="text-gray-400">Email: contact@shopme.com</p>
-                    <p class="text-gray-400">Tél: +33 1 23 45 67 89</p>
+                    @if($siteSettings->email_contact)
+                        <p class="text-gray-400">Email: {{ $siteSettings->email_contact }}</p>
+                    @endif
+                    @if($siteSettings->phone)
+                        <p class="text-gray-400">Tél: {{ $siteSettings->phone }}</p>
+                    @endif
+                    @if($siteSettings->address)
+                        <p class="text-gray-400">{{ $siteSettings->address }}</p>
+                    @endif
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">

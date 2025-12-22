@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
                 'phone' => '+33 1 23 45 67 89',
                 'address' => '123 Rue de Paris, 75001 Paris',
                 'is_active' => true,
-            ]
+            ]–
         );
         $admin->update(['is_active' => true]);
         if ($adminRole && !$admin->hasRole($adminRole)) {
