@@ -132,12 +132,6 @@
                     'route_is' => 'orders.*',
                 ];
             }
-        } else {
-            $primaryNavLinks[] = [
-                'label' => 'Connexion',
-                'route' => 'login',
-                'route_is' => 'login',
-            ];
         }
     @endphp
 
@@ -204,54 +198,64 @@
                     @endforeach
                 </div>
                 
-                <div class="flex-1 max-w-md mx-4">
+                <!-- Barre de recherche réduite -->
+                <div class="flex-1 max-w-xs mx-4">
                     <form action="{{ route('products.index') }}" method="GET" class="relative">
                         <input type="text" name="search" value="{{ request('search') }}" 
                                placeholder="Rechercher..." 
-                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                        <button type="submit" class="absolute right-2 top-1.5 text-sm" style="color: #9ca3af;" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='#9ca3af'">
+                               class="w-full px-3 py-1.5 text-xs border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                        <button type="submit" class="absolute right-2 top-1.5 text-xs" style="color: #9ca3af;" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='#9ca3af'">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
                 </div>
 
-                <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-4">
                     @auth
                         <a href="{{ route('favorites.index') }}" class="relative" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
-                            <i class="fas fa-heart text-xl"></i>
+                            <i class="fas fa-heart text-lg"></i>
                             @if(auth()->user()->favorites()->count() > 0)
-                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
                                     {{ auth()->user()->favorites()->count() }}
                                 </span>
                             @endif
                         </a>
                         <a href="{{ route('cart.index') }}" class="relative" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
-                            <i class="fas fa-shopping-cart text-xl"></i>
+                            <i class="fas fa-shopping-cart text-lg"></i>
                             @if(auth()->user()->cartItems()->count() > 0)
-                                <span class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span class="absolute -top-1.5 -right-1.5 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }};">
                                     {{ auth()->user()->cartItems()->count() }}
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('orders.index') }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
-                            <i class="fas fa-box text-xl"></i>
-                        </a>
                         <div class="relative group">
-                            <button class="flex items-center space-x-2" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">
-                                <i class="fas fa-user-circle text-xl"></i>
-                                <span>{{ Auth::user()->name }}</span>
+                            <button class="flex items-center space-x-1.5 px-2 py-1 rounded-lg hover:bg-gray-100 transition" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};">
+                                <i class="fas fa-user-circle text-lg"></i>
+                                <span class="text-sm font-medium">{{ Str::limit(Auth::user()->name, 15) }}</span>
+                                <i class="fas fa-chevron-down text-xs ml-1"></i>
                             </button>
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                                <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon Profil</a>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-50">
+                                <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                    <i class="fas fa-user mr-2"></i>Mon Profil
+                                </a>
+                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                    <i class="fas fa-box mr-2"></i>Mes Commandes
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Déconnexion</button>
+                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" style="color: {{ $siteSettings->navbar_text_color ?? '#000000' }};" onmouseover="this.style.color='{{ $siteSettings->primary_color ?? '#f97316' }}'" onmouseout="this.style.color='{{ $siteSettings->navbar_text_color ?? '#000000' }}'">Connexion</a>
-                        <a href="{{ route('register') }}" class="text-white px-4 py-2 rounded-lg" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }};" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Inscription</a>
+                        <!-- Un seul bouton pour connexion/inscription -->
+                        <a href="{{ route('login') }}" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }}; color: white;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            <i class="fas fa-user text-sm"></i>
+                            <span class="text-sm font-medium">Connexion</span>
+                        </a>
                     @endauth
                 </div>
             </div>

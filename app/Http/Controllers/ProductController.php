@@ -14,17 +14,46 @@ class ProductController extends Controller
         $query = Product::active()->with(['category', 'categories']);
 
         // Filtres
-            if ($request->filled('category')) {
-                $query->whereHas('categories', function ($q) use ($request) {
-                    $q->where('categories.id', $request->category);
-                });
-            }
+        if ($request->filled('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category);
+            });
+        }
 
         if ($request->filled('search')) {
             $query->where(function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('description', 'like', '%' . $request->search . '%');
             });
+        }
+
+        // Filtre par prix minimum
+        if ($request->filled('price_min')) {
+            $query->where(function($q) use ($request) {
+                $q->whereRaw('CASE WHEN is_on_sale AND sale_price IS NOT NULL THEN sale_price ELSE price END >= ?', [$request->price_min]);
+            });
+        }
+
+        // Filtre par prix maximum
+        if ($request->filled('price_max')) {
+            $query->where(function($q) use ($request) {
+                $q->whereRaw('CASE WHEN is_on_sale AND sale_price IS NOT NULL THEN sale_price ELSE price END <= ?', [$request->price_max]);
+            });
+        }
+
+        // Filtre par promotion
+        if ($request->filled('on_sale')) {
+            $query->where('is_on_sale', true);
+        }
+
+        // Filtre par disponibilité en stock
+        if ($request->filled('in_stock')) {
+            $query->where('stock_quantity', '>', 0);
+        }
+
+        // Filtre par produit vedette
+        if ($request->filled('featured')) {
+            $query->where('featured', true);
         }
 
         if ($request->filled('sort')) {
