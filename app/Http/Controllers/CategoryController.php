@@ -9,6 +9,19 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    public function index()
+    {
+        $categories = Category::whereNull('parent_id')
+            ->where('is_active', true)
+            ->with(['children' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('category.index', compact('categories'));
+    }
+
     public function show($slug)
     {
         $category = Category::where('slug', $slug)

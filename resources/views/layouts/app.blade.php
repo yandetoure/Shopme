@@ -251,10 +251,14 @@
                             </div>
                         </div>
                     @else
-                        <!-- Un seul bouton pour connexion/inscription -->
-                        <a href="{{ route('login') }}" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }}; color: white;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-                            <i class="fas fa-user text-sm"></i>
+                        <!-- Boutons connexion et inscription -->
+                        <a href="{{ route('login') }}" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition border border-gray-300" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }}; color: white;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';" onmouseout="this.style.backgroundColor='{{ $siteSettings->primary_color ?? '#f97316' }}'; this.style.color='white';">
+                            <i class="fas fa-sign-in-alt text-sm"></i>
                             <span class="text-sm font-medium">Connexion</span>
+                        </a>
+                        <a href="{{ route('register') }}" class="flex items-center space-x-2 px-4 py-2 rounded-lg transition border border-gray-300" style="background-color: {{ $siteSettings->primary_color ?? '#f97316' }}; color: white;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='white';" onmouseout="this.style.backgroundColor='{{ $siteSettings->primary_color ?? '#f97316' }}'; this.style.color='white';">
+                            <i class="fas fa-user-plus text-sm"></i>
+                            <span class="text-sm font-medium">Inscription</span>
                         </a>
                     @endauth
                 </div>

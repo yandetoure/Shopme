@@ -13,39 +13,65 @@
             default => null
         };
 
-        // Tabs pour tous les utilisateurs connectés
-        $mobileTabs = [
-            [
-                'label' => 'Accueil',
-                'icon' => 'fa-house',
-                'route' => 'home',
-                'route_is' => 'home',
-            ],
-            [
-                'label' => 'Produits',
-                'icon' => 'fa-store',
-                'route' => 'products.index',
-                'route_is' => 'products.*',
-            ],
-            [
-                'label' => 'Profil',
-                'icon' => 'fa-user',
-                'route' => 'profile.index',
-                'route_is' => 'profile.*',
-            ],
-        ];
-
-        // Ajouter le Dashboard si l'utilisateur a un dashboard (pas les clients)
-        if ($dashboardRoute) {
-            $mobileTabs[] = [
-                'label' => 'Dashboard',
-                'icon' => 'fa-chart-line',
-                'route' => $dashboardRoute,
-                'route_is' => 'dashboard.*',
+        // Si c'est un client (pas de dashboard), afficher Accueil, Produits, Catégories, Profil
+        if (!$dashboardRoute) {
+            $mobileTabs = [
+                [
+                    'label' => 'Accueil',
+                    'icon' => 'fa-house',
+                    'route' => 'home',
+                    'route_is' => 'home',
+                ],
+                [
+                    'label' => 'Produits',
+                    'icon' => 'fa-store',
+                    'route' => 'products.index',
+                    'route_is' => 'products.*',
+                ],
+                [
+                    'label' => 'Catégories',
+                    'icon' => 'fa-tags',
+                    'route' => 'categories.index',
+                    'route_is' => 'categories.*|category.*',
+                ],
+                [
+                    'label' => 'Profil',
+                    'icon' => 'fa-user',
+                    'route' => 'profile.index',
+                    'route_is' => 'profile.*',
+                ],
+            ];
+        } else {
+            // Tabs pour les autres rôles (admin, vendeur, super_admin)
+            $mobileTabs = [
+                [
+                    'label' => 'Accueil',
+                    'icon' => 'fa-house',
+                    'route' => 'home',
+                    'route_is' => 'home',
+                ],
+                [
+                    'label' => 'Produits',
+                    'icon' => 'fa-store',
+                    'route' => 'products.index',
+                    'route_is' => 'products.*',
+                ],
+                [
+                    'label' => 'Profil',
+                    'icon' => 'fa-user',
+                    'route' => 'profile.index',
+                    'route_is' => 'profile.*',
+                ],
+                [
+                    'label' => 'Dashboard',
+                    'icon' => 'fa-chart-line',
+                    'route' => $dashboardRoute,
+                    'route_is' => 'dashboard.*',
+                ],
             ];
         }
     } else {
-        // Tabs pour utilisateurs non connectés
+        // Tabs pour utilisateurs non connectés : Accueil, Produits, Catégories, Profil
         $mobileTabs = [
             [
                 'label' => 'Accueil',
@@ -62,20 +88,14 @@
             [
                 'label' => 'Catégories',
                 'icon' => 'fa-tags',
-                'route' => 'products.index',
-                'route_is' => 'category.*',
+                'route' => 'categories.index',
+                'route_is' => 'categories.*|category.*',
             ],
             [
-                'label' => 'Connexion',
-                'icon' => 'fa-sign-in-alt',
+                'label' => 'Profil',
+                'icon' => 'fa-user',
                 'route' => 'login',
                 'route_is' => 'login',
-            ],
-            [
-                'label' => 'Inscription',
-                'icon' => 'fa-user-plus',
-                'route' => 'register',
-                'route_is' => 'register',
             ],
         ];
     }
