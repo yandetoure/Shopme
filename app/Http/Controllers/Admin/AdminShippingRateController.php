@@ -39,6 +39,8 @@ class AdminShippingRateController extends Controller
             'max_order_amount' => 'nullable|numeric|min:0|gt:min_order_amount',
             'is_free' => 'boolean',
             'estimated_days' => 'nullable|integer|min:1',
+            'country' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -90,6 +92,8 @@ class AdminShippingRateController extends Controller
             'max_order_amount' => 'nullable|numeric|min:0|gt:min_order_amount',
             'is_free' => 'boolean',
             'estimated_days' => 'nullable|integer|min:1',
+            'country' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);

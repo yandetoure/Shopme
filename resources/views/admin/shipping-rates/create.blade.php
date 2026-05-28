@@ -38,6 +38,24 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
+                        <label for="country" class="block text-xs font-medium text-gray-700 mb-1">Pays</label>
+                        <select id="country" name="country" class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
+                            <option value="">Tous les pays</option>
+                            <option value="Sénégal" {{ old('country') == 'Sénégal' ? 'selected' : '' }}>Sénégal</option>
+                            <option value="France" {{ old('country') == 'France' ? 'selected' : '' }}>France</option>
+                            <option value="Côte d'Ivoire" {{ old('country') == "Côte d'Ivoire" ? 'selected' : '' }}>Côte d'Ivoire</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="region" class="block text-xs font-medium text-gray-700 mb-1">Région / Ville</label>
+                        <input type="text" id="region" name="region" value="{{ old('region') }}" placeholder="Ex: Dakar, Paris..."
+                               class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
                         <label for="min_order_amount" class="block text-xs font-medium text-gray-700 mb-1">Montant minimum (FCFA)</label>
                         <input type="number" id="min_order_amount" name="min_order_amount" value="{{ old('min_order_amount') }}" step="0.01" min="0"
                                class="w-full px-3 py-1.5 text-sm border rounded-lg focus:ring-2 focus:ring-orange-500">

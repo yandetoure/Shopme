@@ -16,6 +16,8 @@ class ShippingRate extends Model
         'max_order_amount',
         'is_free',
         'estimated_days',
+        'country',
+        'region',
         'is_active',
         'sort_order',
     ];
@@ -44,13 +46,13 @@ class ShippingRate extends Model
     public static function getRateForAmount(float $amount): ?self
     {
         return self::where('is_active', true)
-            ->where(function($query) use ($amount) {
+            ->where(function ($query) use ($amount) {
                 $query->whereNull('min_order_amount')
-                      ->orWhere('min_order_amount', '<=', $amount);
+                    ->orWhere('min_order_amount', '<=', $amount);
             })
-            ->where(function($query) use ($amount) {
+            ->where(function ($query) use ($amount) {
                 $query->whereNull('max_order_amount')
-                      ->orWhere('max_order_amount', '>=', $amount);
+                    ->orWhere('max_order_amount', '>=', $amount);
             })
             ->orderBy('sort_order')
             ->orderBy('price')

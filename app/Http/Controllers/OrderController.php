@@ -17,40 +17,67 @@ class OrderController extends Controller
     public function checkout()
     {
         $cartItems = Auth::user()->cartItems()->with(['product', 'variation'])->get();
-        
+
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
-        $subtotal = $cartItems->sum(function($item) {
+        $subtotal = $cartItems->sum(function ($item) {
             return $item->total;
         });
-        $tax = $subtotal * 0.20;
-        
-        // Calculer le poids total pour la livraison
-        $totalWeight = $cartItems->sum(function($item) {
-            return ($item->product->weight ?? 0) * $item->quantity * 1000; // En grammes
-        });
-        
-        // Obtenir le tarif de livraison
+
+        // TVA retirée à la demande de l'utilisateur
+        $tax = 0;
+
+        // Récupérer le pays et la région de la session ou de l'utilisateur
+        $country = request('shipping_country', Auth::user()->shipping_country ?? 'Sénégal');
+        $region = request('shipping_region', Auth::user()->shipping_region);
+
+        // Obtenir les tarifs de livraison filtrés par pays et région
+        $shippingRates = ShippingRate::where('is_active', true)
+            ->where(function ($query) use ($country) {
+                $query->whereNull('country')
+                    ->orWhere('country', $country);
+            })
+            ->where(function ($query) use ($region) {
+                $query->whereNull('region')
+                    ->orWhere('region', $region);
+            })
+            ->orderBy('sort_order')
+            ->get();
+
+        // Auto-sélectionner le tarif de livraison
         $shippingRate = null;
-        $shipping = 6550; // Par défaut 6550 FCFA
-        
+        $shipping = 0;
+
         if (request()->has('shipping_rate_id') && request()->shipping_rate_id) {
-            $shippingRate = ShippingRate::find(request()->shipping_rate_id);
+            $shippingRate = $shippingRates->find(request()->shipping_rate_id);
         }
-        
+
         if (!$shippingRate) {
-            $shippingRate = ShippingRate::getRateForAmount($subtotal) ?? ShippingRate::getDefaultRate();
+            // Chercher d'abord un tarif gratuit si les conditions sont réunies
+            $shippingRate = $shippingRates->filter(function ($rate) use ($subtotal) {
+                return $rate->is_free &&
+                    ($rate->min_order_amount === null || $subtotal >= $rate->min_order_amount) &&
+                    ($rate->max_order_amount === null || $subtotal <= $rate->max_order_amount);
+            })->first();
+
+            // Sinon prendre le tarif par défaut ou le premier disponible
+            if (!$shippingRate) {
+                $shippingRate = $shippingRates->filter(function ($rate) use ($subtotal) {
+                    return ($rate->min_order_amount === null || $subtotal >= $rate->min_order_amount) &&
+                        ($rate->max_order_amount === null || $subtotal <= $rate->max_order_amount);
+                })->first();
+            }
         }
-        
+
         if ($shippingRate) {
             $shipping = $shippingRate->is_free ? 0 : $shippingRate->price;
         }
 
         $discount = 0;
         $coupon = null;
-        $discountAmount = $subtotal + $tax; // Montant après réduction avant livraison
+        $discountAmount = $subtotal; // Montant après réduction avant livraison (sans TVA)
 
         // Vérifier si un code promo est fourni
         if (request()->has('coupon_code') && request()->coupon_code) {
@@ -58,19 +85,15 @@ class OrderController extends Controller
             if ($coupon) {
                 $validation = $coupon->isValid($subtotal, Auth::id());
                 if ($validation['valid']) {
-                    $discount = $coupon->calculateDiscount($subtotal + $tax);
-                    $discountAmount = ($subtotal + $tax) - $discount;
+                    $discount = $coupon->calculateDiscount($subtotal);
+                    $discountAmount = $subtotal - $discount;
                 }
             }
         }
 
         $total = max(0, $discountAmount + $shipping); // Total final
 
-        $shippingRates = ShippingRate::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('orders.checkout', compact('cartItems', 'subtotal', 'tax', 'shipping', 'discount', 'discountAmount', 'total', 'coupon', 'shippingRate', 'shippingRates'));
+        return view('orders.checkout', compact('cartItems', 'subtotal', 'tax', 'shipping', 'discount', 'discountAmount', 'total', 'coupon', 'shippingRate', 'shippingRates', 'country', 'region'));
     }
 
     public function index()
@@ -113,46 +136,42 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             // Calculer les totaux
-            $subtotal = $cartItems->sum(function($item) {
+            $subtotal = $cartItems->sum(function ($item) {
                 return $item->total;
             });
-            $tax = $subtotal * 0.20; // 20% de TVA
-            
+            $tax = 0; // TVA supprimée
+
             // Calculer le poids total
-            $totalWeight = $cartItems->sum(function($item) {
+            $totalWeight = $cartItems->sum(function ($item) {
                 return ($item->product->weight ?? 0) * $item->quantity * 1000; // En grammes
             });
-            
+
             // Obtenir le tarif de livraison
             $shippingRate = null;
-            $shipping = 6550; // Par défaut
-            
+            $shipping = 0;
+
             if ($request->shipping_rate_id) {
                 $shippingRate = ShippingRate::findOrFail($request->shipping_rate_id);
-                if ($shippingRate->is_free) {
-                    $shipping = 0;
-                } else {
-                    $shipping = $shippingRate->price;
-                }
+                $shipping = $shippingRate->is_free ? 0 : $shippingRate->price;
             } else {
                 $shippingRate = ShippingRate::getRateForAmount($subtotal) ?? ShippingRate::getDefaultRate();
                 if ($shippingRate) {
                     $shipping = $shippingRate->is_free ? 0 : $shippingRate->price;
                 }
             }
-            
+
             // Gérer le coupon
             $coupon = null;
             $discount = 0;
             $discountAmount = $subtotal + $tax;
-            
+
             if ($request->coupon_code) {
                 $coupon = Coupon::findByCode($request->coupon_code);
                 if ($coupon) {
                     $validation = $coupon->isValid($subtotal, Auth::id());
                     if ($validation['valid']) {
-                        $discount = $coupon->calculateDiscount($subtotal + $tax);
-                        $discountAmount = max(0, ($subtotal + $tax) - $discount);
+                        $discount = $coupon->calculateDiscount($subtotal);
+                        $discountAmount = max(0, $subtotal - $discount);
                     } else {
                         return back()->with('error', $validation['message']);
                     }
@@ -160,7 +179,7 @@ class OrderController extends Controller
                     return back()->with('error', 'Code promo invalide.');
                 }
             }
-            
+
             $total = max(0, $discountAmount + $shipping);
 
             // Créer la commande
@@ -193,7 +212,7 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'discount_amount' => $discount,
                 ]);
-                
+
                 // Incrémenter le compteur d'utilisation
                 $coupon->increment('used_count');
             }
@@ -206,8 +225,8 @@ class OrderController extends Controller
                     'variation_id' => $cartItem->variation_id,
                     'selected_attributes' => $cartItem->selected_attributes,
                     'product_name' => $cartItem->product->name,
-                    'product_sku' => $cartItem->variation && $cartItem->variation->sku 
-                        ? $cartItem->variation->sku 
+                    'product_sku' => $cartItem->variation && $cartItem->variation->sku
+                        ? $cartItem->variation->sku
                         : $cartItem->product->sku,
                     'quantity' => $cartItem->quantity,
                     'price' => $cartItem->price,
